@@ -7,22 +7,26 @@ This microservice generates a doorplate.
 ### Generate one doorplate using JSON
 
 ```bash
-curl --location --request POST 'http://localhost:8001/doorplates/' \
+curl --location --request POST 'http://localhost:8080/doorplates/' \
 --header 'Content-Type: application/json' \
 --data-raw '{
   "roomnumber": "301",
   "description": "Bla bla bla bla",
-  "personname": "Max Müller"
+  "personname": "Max Mueller",
+  "template": "13x13.svg"
 }'
 ```
 
 ### Generate many doorplate using CSV
 
 ```bash
-curl --request POST \
+curl --request POST 'http://localhost:8080/doorplates/' \
 --header 'Content-Type: text/csv' \
---data-binary @rooms.csv 'http://localhost:8001/doorplates/'
+--data-raw '301;bla bla bla;Max Mueller;13x13.svg
+302;whatever;Heinz Strunk;13x13.svg'
 ```
+
+`--data-raw '...'` can be replaced by `--data-binary @rooms.csv` to read data from a file.
 
 # TODO
 ## OpenAPI clients
