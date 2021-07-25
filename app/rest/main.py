@@ -14,8 +14,11 @@ from app.rest.doorplate import DoorplateIn, DoorplateOut
 from fastapi.responses import FileResponse
 import asyncio
 from fastapi import FastAPI, Header, Request
+from fastapi.staticfiles import StaticFiles
 
 fastapi = FastAPI()
+
+fastapi.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -53,12 +56,17 @@ async def route_doorplate_request(
         logger.debug("Routing to JSON handler...")
         doorplate_data = await request.json()
         doorplate_in = DoorplateIn(**doorplate_data)
-        return await post_doorplate(doorplate_in)
-    elif content_type == "text/csv":
+        doorplate_out = await post_doorplate(doorplate_in)
+        logger.debug(f"Returning {doorplate_out}...")
+        return doorplate_out
+    elif content_type.startswith("text/csv"):
         logger.debug("Routing to CSV handler...")
         doorplates_csv = (await request.body()).decode("UTF-8")
-        return await post_doorplate_csv(doorplates_csv)
+        doorplate_out = await post_doorplate_csv(doorplates_csv)
+        logger.debug(f"Returning {doorplate_out}...")
+        return doorplate_out
     else:
+        logger.error("Not routed to anything!")
         # TODO: some exception
         pass
 
@@ -122,7 +130,7 @@ async def generate_doorplate(doorplate: DoorplateIn, doorplate_id: str):
     await svg_exporter.export_to_pdf(svg_data, doorplate_id)
 
 
-@fastapi.get("/doorplates/{id}")
+@fastapi.get("/doorplates/{doorplate_id}")
 async def download_doorplate(doorplate_id: str):
     logger.debug(f"Received GET request on /doorplates/{doorplate_id}")
 
