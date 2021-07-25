@@ -1,6 +1,7 @@
 #!/bin/usr/python3
 import asyncio
 import logging.config
+import threading
 import uuid
 from typing import Optional
 
@@ -87,25 +88,24 @@ async def post_doorplate_csv(doorplates_csv) -> DoorplateOut:
     doorplates_ = await doorplates.from_csv_lines(doorplates_csv.splitlines())
 
     doorplates_ids = []
-    doorplate_generation_tasks = []
+    doorplate_generation_threads = []
 
     for doorplate in doorplates_:
         doorplate_id = str(uuid.uuid4())
         doorplates_ids.append(doorplate_id)
 
-        # logger.debug(f"X Running doorplate generation id={doorplate_id} in coroutine...")
-        # TODO: this seems at least not to run in parallel
-        #  maybe because of no async support in openapi generator?
-        #  should this be in (some, probably better do not create 60 threads) separate threads therefore?
-        doorplate_generation_tasks.append(
-            asyncio.create_task(generate_doorplate(doorplate, doorplate_id))
+        logger.debug(f"Starting doorplate generation id={doorplate_id} in thread...")
+        doorplate_generation_thread = threading.Thread(
+            target=asyncio.run, args=(generate_doorplate(doorplate, doorplate_id),)
         )
-        # logger.debug(f"X Ran doorplate generation id={doorplate_id} in coroutine")
+        doorplate_generation_threads.append(doorplate_generation_thread)
+        doorplate_generation_thread.start()
+        logger.debug(f"Started doorplate generation id={doorplate_id} in thread")
 
-    for doorplate_generation_task in doorplate_generation_tasks:
-        # logger.debug(f"Y Awaiting generation task {doorplate_generation_task}...")
-        await doorplate_generation_task
-        # logger.debug(f"Y Awaited generation task {doorplate_generation_task}")
+    for doorplate_generation_thread in doorplate_generation_threads:
+        logger.debug(f"Starting generation thread {doorplate_generation_thread}...")
+        doorplate_generation_thread.join()
+        logger.debug(f"Started generation thread {doorplate_generation_thread}")
 
     doorplates_filepaths = [
         exporter.get_filename_from_id(doorplate_id) for doorplate_id in doorplates_ids

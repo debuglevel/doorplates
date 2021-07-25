@@ -35,7 +35,10 @@ async def merge_via_pypdf2(combined_filename, input_filenames):
 
         logger.debug("Writing PDF...")
         pdf_file_writer.write(output_stream)
-
+    except Exception as e:
+        logger.error(f"Exception in merge_via_pypdf2: {e}\n")
+    except:
+        logger.error(f"Even another error")
     finally:
         logger.debug("Closing streams...")
 
