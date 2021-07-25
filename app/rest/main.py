@@ -95,6 +95,8 @@ async def post_doorplate_csv(doorplates_csv) -> DoorplateOut:
 
         # logger.debug(f"X Running doorplate generation id={doorplate_id} in coroutine...")
         # TODO: this seems at least not to run in parallel
+        #  maybe because of no async support in openapi generator?
+        #  should this be in (some, probably better do not create 60 threads) separate threads therefore?
         doorplate_generation_tasks.append(
             asyncio.create_task(generate_doorplate(doorplate, doorplate_id))
         )
