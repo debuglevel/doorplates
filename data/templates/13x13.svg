@@ -24,8 +24,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.85"
-     inkscape:cx="175.96915"
-     inkscape:cy="877.65838"
+     inkscape:cx="169.97281"
+     inkscape:cy="273.1227"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -38,7 +38,7 @@
      inkscape:guide-bbox="true"
      inkscape:document-rotation="0">
     <sodipodi:guide
-       position="27.025298,210.24926"
+       position="27.182883,281.5927"
        orientation="1,0"
        id="guide4531"
        inkscape:locked="false" />
@@ -137,6 +137,14 @@
        orientation="1,0"
        id="guide886"
        inkscape:locked="false" />
+    <sodipodi:guide
+       position="43.855785,204.00593"
+       orientation="1,0"
+       id="guide66" />
+    <sodipodi:guide
+       position="139.21598,231.84912"
+       orientation="1,0"
+       id="guide68" />
   </sodipodi:namedview>
   <metadata
      id="metadata5">
@@ -210,13 +218,13 @@
        id="path851"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 27.025298,0.18933775 V 26.96936"
+       style="fill:none;stroke:#000000;stroke-width:0.265533px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 27.025298,-0.00325353 V 26.96936"
        id="path853"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 156.00967,0.18933775 V 26.96936"
+       style="fill:none;stroke:#000000;stroke-width:0.265533px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 156.00967,-0.00325353 V 26.96936"
        id="path855"
        inkscape:connector-curvature="0" />
     <path
@@ -230,8 +238,8 @@
        id="path859"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 156.00967,297.55025 V 171.71201"
+       style="fill:none;stroke:#000000;stroke-width:0.264px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 156.00967,296.996 V 171.71201"
        id="path861"
        inkscape:connector-curvature="0" />
     <path
@@ -248,7 +256,7 @@
        xml:space="preserve"
        id="flowRoot871"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       transform="scale(0.26458333)"><flowRegion
+       transform="matrix(0.26458333,0,0,0.26458333,-0.46691177,0)"><flowRegion
          id="flowRegion873"><rect
            id="rect875"
            width="455.45993"
@@ -330,5 +338,15 @@
            y="670.755" /></flowRegion><flowPara
          style="font-size:13.3333px"
          id="flowPara885">This template fits Consystec Art.Nr. 300.602</flowPara></flowRoot>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.250631px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 43.721367,2.9406408 V 26.970824"
+       id="path853-9"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.250631px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 139.34323,2.9406408 V 26.970824"
+       id="path853-9-3"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
