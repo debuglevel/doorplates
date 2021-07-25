@@ -9,7 +9,8 @@ import uuid
 import os
 import shutil
 import app.library.person
-from app.library import health, svg_exporter, svg_generator, csv_converter, pdf_merger
+import app.library.templates
+from app.library import health, exporter, doorplates, pdf_merger
 from app.rest.doorplate import DoorplateIn, DoorplateOut
 from fastapi.responses import FileResponse
 import asyncio
@@ -39,7 +40,7 @@ async def get_health_async():
 @fastapi.get("/templates/")
 async def get_templates():
     logger.debug("Received GET request on /templates")
-    return await svg_generator.get_templates()
+    return await app.library.templates.get_all_filenames()
 
 
 # TODO POST / PUT templates
@@ -82,14 +83,12 @@ async def post_doorplate(doorplate: DoorplateIn) -> DoorplateOut:
 
 
 async def post_doorplate_csv(doorplates_csv) -> DoorplateOut:
-    doorplates = await csv_converter.convert_lines_to_doorplate(
-        doorplates_csv.splitlines()
-    )
+    doorplates_ = await doorplates.from_csv_lines(doorplates_csv.splitlines())
 
     doorplates_ids = []
     doorplate_generation_tasks = []
 
-    for doorplate in doorplates:
+    for doorplate in doorplates_:
         doorplate_id = str(uuid.uuid4())
         doorplates_ids.append(doorplate_id)
 
@@ -106,14 +105,11 @@ async def post_doorplate_csv(doorplates_csv) -> DoorplateOut:
         # logger.debug(f"Y Awaited generation task {doorplate_generation_task}")
 
     doorplates_filepaths = [
-        svg_exporter.get_filename_from_id(doorplate_id)
-        for doorplate_id in doorplates_ids
+        exporter.get_filename_from_id(doorplate_id) for doorplate_id in doorplates_ids
     ]
 
     combined_doorplates_id = str(uuid.uuid4())
-    combined_doorplates_filepath = svg_exporter.get_filename_from_id(
-        combined_doorplates_id
-    )
+    combined_doorplates_filepath = exporter.get_filename_from_id(combined_doorplates_id)
     await pdf_merger.merge(doorplates_filepaths, combined_doorplates_filepath)
 
     return DoorplateOut(id=combined_doorplates_id)
@@ -121,20 +117,20 @@ async def post_doorplate_csv(doorplates_csv) -> DoorplateOut:
 
 async def generate_doorplate(doorplate: DoorplateIn, doorplate_id: str):
     logger.debug(f"Generating doorplate {doorplate} with id={doorplate_id}")
-    svg_data = await svg_generator.generate(
+    svg_data = await app.library.templates.generate(
         doorplate.roomnumber,
         doorplate.description,
         doorplate.personname,
         doorplate.template,
     )
-    await svg_exporter.export_to_pdf(svg_data, doorplate_id)
+    await exporter.export_to_pdf(svg_data, doorplate_id)
 
 
 @fastapi.get("/doorplates/{doorplate_id}")
 async def download_doorplate(doorplate_id: str):
     logger.debug(f"Received GET request on /doorplates/{doorplate_id}")
 
-    pdf_filename = svg_exporter.get_filename_from_id(doorplate_id)
+    pdf_filename = exporter.get_filename_from_id(doorplate_id)
     logger.debug(f"Sending PDF file '{pdf_filename}'...")
     return FileResponse(
         pdf_filename,

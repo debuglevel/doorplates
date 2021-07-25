@@ -8,18 +8,22 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-async def convert_lines_to_doorplate(lines: List[str]) -> List[DoorplateIn]:
+async def from_csv_lines(lines: List[str]) -> List[DoorplateIn]:
+    logger.debug("Building Doorplates from CSV lines...")
+
     doorplates = []
 
     csv_reader = csv.reader(lines, delimiter=";")
     for row in csv_reader:
         logger.debug(f"Parsing row {csv_reader.line_num} in CSV file...")
-        doorplates.append(await convert_row_to_doorplate(row))
+        doorplates.append(await from_csv_row(row))
 
     return doorplates
 
 
-async def convert_row_to_doorplate(csv_row):
+async def from_csv_row(csv_row: List[str]) -> DoorplateIn:
+    logger.debug("Building Doorplate from CSV line...")
+
     room_number_column_index = 0
     description_column_index = 1
     person_name_column_index = 2

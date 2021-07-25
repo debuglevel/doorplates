@@ -12,25 +12,25 @@ logger = logging.getLogger(__name__)
 data_directory = "data/doorplates/"
 
 
-async def export_to_pdf(svg_data: str, doorplate_id: str):
+async def export_to_pdf(image_data: str, doorplate_id: str):
     logger.debug(
-        f"Exporting SVG data ({len(svg_data)} bytes) to PDF with id={doorplate_id}..."
+        f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id}..."
     )
-    await export_to_pdf_via_inkscape_microservice(svg_data, doorplate_id)
+    await export_to_pdf_via_inkscape_microservice(image_data, doorplate_id)
 
 
-async def export_to_pdf_via_inkscape_microservice(svg_data: str, doorplate_id: str):
+async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id: str):
     logger.debug(
-        f"Exporting SVG data ({len(svg_data)} bytes) to PDF with id={doorplate_id} via Inkscape microservice..."
+        f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id} via Inkscape microservice..."
     )
 
-    logger.debug("Encoding SVG data to Base64...")
+    logger.debug("Encoding image data to Base64...")
     # TODO: UTF-8 instead? test if it works
-    svg_bytes = svg_data.encode("ascii")
-    svg_base64_bytes = base64.b64encode(svg_bytes)
-    svg_base64 = svg_base64_bytes.decode("ascii")
+    image_bytes = image_data.encode("ascii")
+    image_base64_bytes = base64.b64encode(image_bytes)
+    image_base64 = image_base64_bytes.decode("ascii")
     logger.debug(
-        f"Encoded SVG data ({len(svg_data)} bytes) to Base64 ({len(svg_base64)} bytes)..."
+        f"Encoded SVG data ({len(image_data)} bytes) to Base64 ({len(image_base64)} bytes)..."
     )
 
     # TODO: the host should be configurable, obviously.
@@ -41,8 +41,8 @@ async def export_to_pdf_via_inkscape_microservice(svg_data: str, doorplate_id: s
         inkscape_instance = default_api.DefaultApi(inkscape_client)
 
         conversion_in = ConversionIn(
-            base64=svg_base64,
-            inputformat="svg",
+            base64=image_base64,
+            inputformat="svg",  # TODO should not only be svg
             outputformat="pdf",
         )
 
@@ -66,5 +66,5 @@ async def export_to_pdf_via_inkscape_microservice(svg_data: str, doorplate_id: s
 
 
 def get_filename_from_id(doorplate_id: str) -> str:
-    logger.debug(f"Getting filename for doorplate id={doorplate_id}...")
+    logger.debug(f"Getting PDF filename for doorplate id={doorplate_id}...")
     return f"{data_directory}/{doorplate_id}.pdf"
