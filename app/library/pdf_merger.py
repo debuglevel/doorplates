@@ -1,39 +1,20 @@
 import sys
 from typing import List
-from PyPDF2 import PdfFileReader, PdfFileWriter
-
-# def pdf_cat(input_filenames, output_stream):
-#     input_streams = []
-#
-#     try:
-#         for input_filename in input_filenames:
-#             input_streams.append(open(input_filename, 'rb'))
-#
-#         writer = PdfFileWriter()
-#         for reader in map(PdfFileReader, input_streams):
-#             for n in range(reader.getNumPages()):
-#                 writer.addPage(reader.getPage(n))
-#         writer.write(output_stream)
-#     finally:
-#         for f in input_streams:
-#             f.close()
-#         output_stream.close()
-#
-# if __name__ == '__main__':
-#     if sys.platform == "win32":
-#         import os, msvcrt
-#         msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
-#     pdf_cat(sys.argv[1:], sys.stdout)
 
 
 async def merge(input_filenames: List[str], combined_filename: str):
-    input_streams = []
-    output_stream = open(combined_filename, 'wb')
+    await merge_via_pypdf2(combined_filename, input_filenames)
 
+
+async def merge_via_pypdf2(combined_filename, input_filenames):
+    from PyPDF2 import PdfFileReader, PdfFileWriter
+
+    input_streams = []
+    output_stream = open(combined_filename, "wb")
     try:
         # open input files for reading
         for input_filename in input_filenames:
-            input_streams.append(open(input_filename, 'rb'))
+            input_streams.append(open(input_filename, "rb"))
 
         pdf_file_writer = PdfFileWriter()
 

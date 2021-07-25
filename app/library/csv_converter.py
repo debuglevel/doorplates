@@ -7,40 +7,47 @@ import logging.config
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# async def convert_line_to_json(line: str) -> DoorplateIn:
-#     pass
 
 async def convert_lines_to_doorplate(lines: List[str]) -> List[DoorplateIn]:
     doorplates = []
 
-    csv_reader = csv.reader(lines, delimiter=';')
+    csv_reader = csv.reader(lines, delimiter=";")
     for row in csv_reader:
         logger.debug(f"Parsing row {csv_reader.line_num} in CSV file...")
-
         doorplates.append(await convert_row_to_doorplate(row))
 
     return doorplates
 
-    # # TODO: maybe uns csvreader which would then just parse the whole thing
-    # return [ await convert_line_to_json(line) for line in lines.splitlines() ]
 
+async def convert_row_to_doorplate(csv_row):
+    room_number_column_index = 0
+    description_column_index = 1
+    person_name_column_index = 2
+    template_column_index = 3
 
-async def convert_row_to_doorplate(row):
     try:
-        roomnumber = row[0]
+        room_number = csv_row[room_number_column_index]
     except:
-        roomnumber = ''
-    try:
-        description = row[1]
-    except:
-        description = ''
-    try:
-        personname = row[2]
-    except:
-        personname = ''
-    try:
-        template = row[3]
-    except:
-        template = ''
+        room_number = ""
 
-    return DoorplateIn(roomnumber=roomnumber, description=description, personname=personname, template=template)
+    try:
+        description = csv_row[description_column_index]
+    except:
+        description = ""
+
+    try:
+        person_name = csv_row[person_name_column_index]
+    except:
+        person_name = ""
+
+    try:
+        template = csv_row[template_column_index]
+    except:
+        template = ""
+
+    return DoorplateIn(
+        roomnumber=room_number,
+        description=description,
+        personname=person_name,
+        template=template,
+    )
