@@ -2,6 +2,8 @@ import logging.config
 import os
 from typing import Union
 
+import aiofiles
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -11,8 +13,8 @@ templates_directory = "data/templates/"
 async def add(filename: str, data: Union[bytes, str]):
     logger.debug(f"Adding template {filename} ({len(data)} bytes)...")
     filepath = get_filepath(filename)
-    with open(filepath, "wb") as file:
-        file.write(data)
+    async with aiofiles.open(filepath, "wb") as file:
+        await file.write(data)
 
 
 async def get_all_filenames():
@@ -29,8 +31,8 @@ def get_filepath(filename: str) -> str:
 async def get_data(filename: str) -> str:
     logger.debug(f"Getting template {filename}...")
     filepath = get_filepath(filename)
-    with open(filepath, "r") as file:
-        data = file.read()
+    async with aiofiles.open(filepath, "r") as file:
+        data = await file.read()
     return data
 
 

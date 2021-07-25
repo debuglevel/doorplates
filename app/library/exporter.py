@@ -2,6 +2,8 @@
 import base64
 import logging.config
 
+import aiofiles
+
 from app.library import inkscape_converter_client
 from app.library.inkscape_converter_client.api import default_api
 from app.library.inkscape_converter_client.model.conversion_in import ConversionIn
@@ -59,9 +61,9 @@ async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id:
             logger.debug("Received response from Inkscape microservice")
 
             pdf_filename = get_filename_from_id(doorplate_id)
-            with open(pdf_filename, "wb") as pdf_file:
+            async with aiofiles.open(pdf_filename, "wb") as pdf_file:
                 logger.debug(f"Writing PDF to {pdf_filename}...")
-                pdf_file.write(pdf_buffered_reader.read())
+                await pdf_file.write(pdf_buffered_reader.read())
 
         except inkscape_converter_client.ApiException as e:
             logger.error(
