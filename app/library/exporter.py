@@ -27,10 +27,9 @@ async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id:
     )
 
     logger.debug("Encoding image data to Base64...")
-    # TODO: UTF-8 instead? test if it works
-    image_bytes = image_data.encode("ascii")
+    image_bytes = image_data.encode("UTF-8")
     image_base64_bytes = base64.b64encode(image_bytes)
-    image_base64 = image_base64_bytes.decode("ascii")
+    image_base64 = image_base64_bytes.decode("UTF-8")
     logger.debug(
         f"Encoded SVG data ({len(image_data)} bytes) to Base64 ({len(image_base64)} bytes)..."
     )
