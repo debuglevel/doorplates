@@ -10,6 +10,7 @@ aiofiles==0.7.0
 # for openapi client
 nulltype==2.3.1
 python-dateutil==2.8.2
+python-multipart==0.0.5
 
 # Persistence
 tinydb==4.4.0

@@ -1,5 +1,6 @@
 import logging.config
 import os
+from typing import Union
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -7,10 +8,10 @@ logger = logging.getLogger(__name__)
 templates_directory = "data/templates/"
 
 
-async def add(filename: str, data: str):
-    logger.debug(f"Adding template {filename}...")
+async def add(filename: str, data: Union[bytes, str]):
+    logger.debug(f"Adding template {filename} ({len(data)} bytes)...")
     filepath = get_filepath(filename)
-    with open(filepath, "w") as file:
+    with open(filepath, "wb") as file:
         file.write(data)
 
 

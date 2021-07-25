@@ -1,21 +1,18 @@
 #!/bin/usr/python3
+import asyncio
 import logging.config
-from pprint import pprint
-from typing import Optional
-from fastapi import FastAPI
-import sys
-import tempfile
 import uuid
-import os
-import shutil
+from typing import Optional
+
+from fastapi import FastAPI, File, Form, UploadFile
+from fastapi import Header, Request
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
 import app.library.person
 import app.library.templates
-from app.library import health, exporter, doorplates, pdf_merger
+from app.library import health, exporter, doorplates, pdf_merger, templates
 from app.rest.doorplate import DoorplateIn, DoorplateOut
-from fastapi.responses import FileResponse
-import asyncio
-from fastapi import FastAPI, Header, Request
-from fastapi.staticfiles import StaticFiles
 
 fastapi = FastAPI()
 
@@ -43,7 +40,13 @@ async def get_templates():
     return await app.library.templates.get_all_filenames()
 
 
-# TODO POST / PUT templates
+@fastapi.post("/templates/")
+async def post_file(
+    template_file: UploadFile = File(...), filename: str = Form(...)
+):
+    logger.debug("Received POST request in /templates")
+    template_data = await template_file.read()
+    await templates.add(filename, template_data)
 
 
 @fastapi.post("/doorplates/", response_model=DoorplateOut)
