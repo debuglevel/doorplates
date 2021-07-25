@@ -41,9 +41,7 @@ async def get_templates():
 
 
 @fastapi.post("/templates/")
-async def post_file(
-    template_file: UploadFile = File(...), filename: str = Form(...)
-):
+async def post_file(template_file: UploadFile = File(...), filename: str = Form(...)):
     logger.debug("Received POST request in /templates")
     template_data = await template_file.read()
     await templates.add(filename, template_data)

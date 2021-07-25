@@ -35,6 +35,12 @@ With inkscape microservice port 8081 on the host:
 docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i http://host.docker.internal:8081/openapi.json -g python -o /local/out/
 docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i http://host.docker.internal:8081/openapi.json -g python -o /local/inkscape-client/ --additional-properties=generateSourceCodeOnly=true,packageName=inkscape_converter_client
 docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i http://host.docker.internal:8081/openapi.json -g python -o /local/inkscape-client/ --additional-properties=generateSourceCodeOnly=true,packageName=app.library.inkscape_converter_client
+
+# but asyncio does not seem to have any effect
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli:v5.2.0 generate -i http://host.docker.internal:8081/openapi.json -g python -o /local/inkscape-client/ --additional-properties=library=asyncio,generateSourceCodeOnly=true,packageName=app.library.inkscape_converter_client
+
+# seems to be a regular argument, but only works with python-legacy
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli:v5.2.0 generate -i http://host.docker.internal:8081/openapi.json -g python-legacy -o /local/inkscape-client/ --additional-properties=generateSourceCodeOnly=true,packageName=app.library.inkscape_converter_client --library=asyncio
 ```
 
 
