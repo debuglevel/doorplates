@@ -1,3 +1,49 @@
+# Doorplates Microservice
+
+This microservice generates a doorplate.
+
+## Example usage
+
+### Generate one doorplate using JSON
+
+```bash
+curl --location --request POST 'http://localhost:8080/doorplates/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "roomnumber": "301",
+  "description": "Bla bla bla bla",
+  "personname": "Max Mueller",
+  "template": "13x13.svg"
+}'
+```
+
+### Generate many doorplate using CSV
+
+```bash
+curl --request POST 'http://localhost:8080/doorplates/' \
+--header 'Content-Type: text/csv' \
+--data-raw '301;bla bla bla;Max Mueller;13x13.svg
+302;whatever;Heinz Strunk;13x13.svg'
+```
+
+`--data-raw '...'` can be replaced by `--data-binary @rooms.csv` to read data from a file.
+
+# TODO
+## OpenAPI clients
+With inkscape microservice port 8081 on the host:
+```
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i http://host.docker.internal:8081/openapi.json -g python -o /local/out/
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i http://host.docker.internal:8081/openapi.json -g python -o /local/inkscape-client/ --additional-properties=generateSourceCodeOnly=true,packageName=inkscape_converter_client
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i http://host.docker.internal:8081/openapi.json -g python -o /local/inkscape-client/ --additional-properties=generateSourceCodeOnly=true,packageName=app.library.inkscape_converter_client
+
+# but asyncio does not seem to have any effect
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli:v5.2.0 generate -i http://host.docker.internal:8081/openapi.json -g python -o /local/inkscape-client/ --additional-properties=library=asyncio,generateSourceCodeOnly=true,packageName=app.library.inkscape_converter_client
+
+# seems to be a regular argument, but only works with python-legacy
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli:v5.2.0 generate -i http://host.docker.internal:8081/openapi.json -g python-legacy -o /local/inkscape-client/ --additional-properties=generateSourceCodeOnly=true,packageName=app.library.inkscape_converter_client --library=asyncio
+```
+
+
 # Python Microservice Template
 
 Python microservice template, inspired by my Kotlin based microservice
@@ -110,7 +156,7 @@ tox
 
 #### OpenAPI documentation
 
-* Open [Swagger UI](http://localhost:8000/docs) or [ReDoc](http://localhost:8000/redoc)
+* Open [Swagger UI](http://localhost:8080/docs) or [ReDoc](http://localhost:8080/redoc)
 * OpenAPI specs are available (as JSON) at http://localhost:8080/openapi.json 
 * Update `openapi.json` via `python update-openapi.py`
 
