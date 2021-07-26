@@ -66,6 +66,8 @@ least.
         * tox
 * REST
     * FastAPI
+* Configuration
+  * [Pydantic Settings Management](https://fastapi.tiangolo.com/advanced/settings/)
 * Deployment
     * Docker
     * docker-compose

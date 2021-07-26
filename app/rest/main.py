@@ -5,15 +5,16 @@ import threading
 import uuid
 from typing import Optional
 
-from fastapi import FastAPI, File, Form, UploadFile
+from fastapi import FastAPI, File, Form, UploadFile, Depends
 from fastapi import Header, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-
+from functools import lru_cache
 import app.library.person
 import app.library.templates
 from app.library import health, exporter, doorplates, pdf_merger, templates
 from app.rest.doorplate import DoorplateIn, DoorplateOut
+from app.rest import configuration
 
 fastapi = FastAPI()
 
@@ -21,6 +22,11 @@ fastapi.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+
+@lru_cache()
+def get_configuration():
+    return configuration.Configuration()
 
 
 @fastapi.get("/health")
@@ -33,6 +39,15 @@ def get_health():
 async def get_health_async():
     logger.debug("Received GET request on /health_async")
     return await health.get_health_async()
+
+
+@fastapi.get("/configuration")
+async def get_configuration(config: configuration.Configuration = Depends(get_configuration)):
+    return {
+        "some_string": config.some_string,
+        "some_string_with_default": config.some_string_with_default,
+        "some_integer_with_default": config.some_integer_with_default,
+    }
 
 
 @fastapi.get("/templates/")
