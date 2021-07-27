@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel
 from app.library.doorplates import Doorplate
 
@@ -15,6 +17,11 @@ class DoorplateResponse(BaseModel):
     description: str
     personname: str
     template: str
+
+
+class DoorplatesResponse(BaseModel):
+    id: str
+    doorplates: List[DoorplateResponse]
 
 
 async def to_doorplate(doorplate_request: DoorplateRequest) -> Doorplate:
