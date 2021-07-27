@@ -12,10 +12,10 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import app.library.person
 import app.library.templates
-from app.library import health, exporter, doorplates, pdf_merger, templates
+from app.library import health, exporter, doorplates, pdf_merger, templates, configuration
 from app.library.doorplates import Doorplate
 from app.rest.doorplate import DoorplateRequest, DoorplateResponse, DoorplatesResponse
-from app.rest import configuration, doorplate
+from app.rest import doorplate
 
 fastapi = FastAPI()
 
