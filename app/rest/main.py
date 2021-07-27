@@ -10,7 +10,6 @@ from fastapi import FastAPI, File, Form, UploadFile, Depends
 from fastapi import Header, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from functools import lru_cache
 import app.library.person
 import app.library.templates
 from app.library import health, exporter, doorplates, pdf_merger, templates
@@ -26,11 +25,6 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-@lru_cache()
-def get_configuration():
-    return configuration.Configuration()
-
-
 @fastapi.get("/health")
 def get_health():
     logger.debug("Received GET request on /health")
@@ -44,11 +38,9 @@ async def get_health_async():
 
 
 @fastapi.get("/configuration")
-async def get_configuration(config: configuration.Configuration = Depends(get_configuration)):
+async def get_configuration(config: configuration.Configuration = Depends(configuration.get_configuration)):
     return {
-        "some_string": config.some_string,
-        "some_string_with_default": config.some_string_with_default,
-        "some_integer_with_default": config.some_integer_with_default,
+        "inkscape_url": config.inkscape_url,
     }
 
 
