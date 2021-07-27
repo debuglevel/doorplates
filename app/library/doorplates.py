@@ -1,17 +1,26 @@
-from typing import List
+from typing import List, Optional
 import csv
 
-from app.rest.doorplate import DoorplateIn
+from pydantic import BaseModel
+
 import logging.config
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-async def from_csv_lines(lines: List[str]) -> List[DoorplateIn]:
+class Doorplate(BaseModel):
+    id: Optional[str]
+    roomnumber: str
+    description: str
+    personname: str
+    template: str
+
+
+async def from_csv_lines(lines: List[str]) -> List[Doorplate]:
     logger.debug("Building Doorplates from CSV lines...")
 
-    doorplates = []
+    doorplates: List[Doorplate] = []
 
     csv_reader = csv.reader(lines, delimiter=";")
     for row in csv_reader:
@@ -21,7 +30,7 @@ async def from_csv_lines(lines: List[str]) -> List[DoorplateIn]:
     return doorplates
 
 
-async def from_csv_row(csv_row: List[str]) -> DoorplateIn:
+async def from_csv_row(csv_row: List[str]) -> Doorplate:
     logger.debug("Building Doorplate from CSV line...")
 
     room_number_column_index = 0
@@ -49,7 +58,7 @@ async def from_csv_row(csv_row: List[str]) -> DoorplateIn:
     except:
         template = ""
 
-    return DoorplateIn(
+    return Doorplate(
         roomnumber=room_number,
         description=description,
         personname=person_name,
