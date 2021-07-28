@@ -1,6 +1,7 @@
 import logging
-from pydantic import BaseModel
 from datetime import datetime
+
+from pydantic import BaseModel
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

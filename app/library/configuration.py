@@ -1,8 +1,7 @@
-from functools import lru_cache
 import logging.config
+from functools import lru_cache
 
 from pydantic import BaseSettings
-
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

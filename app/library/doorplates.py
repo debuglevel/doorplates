@@ -1,9 +1,8 @@
-from typing import List, Optional
 import csv
+import logging.config
+from typing import List, Optional
 
 from pydantic import BaseModel
-
-import logging.config
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
