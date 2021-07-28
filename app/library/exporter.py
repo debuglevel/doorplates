@@ -4,7 +4,7 @@ import logging.config
 
 import aiofiles
 
-from app.library import inkscape_converter_client
+from app.library import inkscape_converter_client, configuration
 from app.library.inkscape_converter_client.api import default_api
 from app.library.inkscape_converter_client.model.conversion_in import ConversionIn
 
@@ -34,9 +34,8 @@ async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id:
         f"Encoded SVG data ({len(image_data)} bytes) to Base64 ({len(image_base64)} bytes)..."
     )
 
-    # TODO: the host should be configurable, obviously.
     api_configuration = inkscape_converter_client.Configuration(
-        host="http://localhost:8081"
+        host=configuration.get_configuration().inkscape_url
     )
     with inkscape_converter_client.ApiClient(api_configuration) as inkscape_client:
         inkscape_instance = default_api.DefaultApi(inkscape_client)
@@ -48,7 +47,7 @@ async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id:
         )
 
         try:
-            logger.debug("Sending request to Inkscape microservice...")
+            logger.debug(f"Sending request to Inkscape microservice ({api_configuration.host})...")
             # returns an application/octet-stream which results in a BufferedReader here
             # TODO: it would probably be nice if this is async/await,
             #  but OpenAPI generator does not seem to support that.

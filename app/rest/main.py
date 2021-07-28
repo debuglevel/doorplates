@@ -38,7 +38,8 @@ async def get_health_async():
 
 
 @fastapi.get("/configuration")
-async def get_configuration(config: configuration.Configuration = Depends(configuration.get_configuration)):
+async def get_configuration():
+    config = configuration.get_configuration()
     return {
         "inkscape_url": config.inkscape_url,
     }
