@@ -25,6 +25,11 @@ RUN pip3 install -r requirements.txt
 # /app/app looks ugly, but preserves the "app" module folder
 COPY app/ /app/app/
 
+# TODO: somehow this is not too nice. there should just be a /data folder and the location to it should be configurable
+COPY data/ /app/data/
+RUN chown -R 1111:1111 /app/data
+RUN ls -al /app/data
+
 # switch to unprivileged user for following commands
 USER appuser
 
