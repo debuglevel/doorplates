@@ -10,7 +10,5 @@
 # sys.setrecursionlimit(n)
 
 from app.library.inkscape_converter_client.model.conversion_in import ConversionIn
-from app.library.inkscape_converter_client.model.http_validation_error import (
-    HTTPValidationError,
-)
+from app.library.inkscape_converter_client.model.http_validation_error import HTTPValidationError
 from app.library.inkscape_converter_client.model.validation_error import ValidationError

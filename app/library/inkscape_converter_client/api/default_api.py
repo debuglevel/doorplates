@@ -11,10 +11,7 @@
 import re  # noqa: F401
 import sys  # noqa: F401
 
-from app.library.inkscape_converter_client.api_client import (
-    ApiClient,
-    Endpoint as _Endpoint,
-)
+from app.library.inkscape_converter_client.api_client import ApiClient, Endpoint as _Endpoint
 from app.library.inkscape_converter_client.model_utils import (  # noqa: F401
     check_allowed_values,
     check_validations,
@@ -22,12 +19,10 @@ from app.library.inkscape_converter_client.model_utils import (  # noqa: F401
     datetime,
     file_type,
     none_type,
-    validate_and_convert_types,
+    validate_and_convert_types
 )
 from app.library.inkscape_converter_client.model.conversion_in import ConversionIn
-from app.library.inkscape_converter_client.model.http_validation_error import (
-    HTTPValidationError,
-)
+from app.library.inkscape_converter_client.model.http_validation_error import HTTPValidationError
 
 
 class DefaultApi(object):
@@ -42,7 +37,11 @@ class DefaultApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-        def __convert_image_images_post(self, conversion_in, **kwargs):
+        def __convert_image_images_post(
+            self,
+            conversion_in,
+            **kwargs
+        ):
             """Convert Image  # noqa: E501
 
             This method makes a synchronous HTTP request by default. To make an
@@ -80,59 +79,86 @@ class DefaultApi(object):
                     If the method is called asynchronously, returns the request
                     thread.
             """
-            kwargs["async_req"] = kwargs.get("async_req", False)
-            kwargs["_return_http_data_only"] = kwargs.get(
-                "_return_http_data_only", True
+            kwargs['async_req'] = kwargs.get(
+                'async_req', False
             )
-            kwargs["_preload_content"] = kwargs.get("_preload_content", True)
-            kwargs["_request_timeout"] = kwargs.get("_request_timeout", None)
-            kwargs["_check_input_type"] = kwargs.get("_check_input_type", True)
-            kwargs["_check_return_type"] = kwargs.get("_check_return_type", True)
-            kwargs["_host_index"] = kwargs.get("_host_index")
-            kwargs["conversion_in"] = conversion_in
+            kwargs['_return_http_data_only'] = kwargs.get(
+                '_return_http_data_only', True
+            )
+            kwargs['_preload_content'] = kwargs.get(
+                '_preload_content', True
+            )
+            kwargs['_request_timeout'] = kwargs.get(
+                '_request_timeout', None
+            )
+            kwargs['_check_input_type'] = kwargs.get(
+                '_check_input_type', True
+            )
+            kwargs['_check_return_type'] = kwargs.get(
+                '_check_return_type', True
+            )
+            kwargs['_host_index'] = kwargs.get('_host_index')
+            kwargs['conversion_in'] = \
+                conversion_in
             return self.call_with_http_info(**kwargs)
 
         self.convert_image_images_post = _Endpoint(
             settings={
-                "response_type": (file_type,),
-                "auth": [],
-                "endpoint_path": "/images/",
-                "operation_id": "convert_image_images_post",
-                "http_method": "POST",
-                "servers": None,
+                'response_type': (file_type,),
+                'auth': [],
+                'endpoint_path': '/images/',
+                'operation_id': 'convert_image_images_post',
+                'http_method': 'POST',
+                'servers': None,
             },
             params_map={
-                "all": [
-                    "conversion_in",
+                'all': [
+                    'conversion_in',
                 ],
-                "required": [
-                    "conversion_in",
+                'required': [
+                    'conversion_in',
                 ],
-                "nullable": [],
-                "enum": [],
-                "validation": [],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
             },
             root_map={
-                "validations": {},
-                "allowed_values": {},
-                "openapi_types": {
-                    "conversion_in": (ConversionIn,),
+                'validations': {
                 },
-                "attribute_map": {},
-                "location_map": {
-                    "conversion_in": "body",
+                'allowed_values': {
                 },
-                "collection_format_map": {},
+                'openapi_types': {
+                    'conversion_in':
+                        (ConversionIn,),
+                },
+                'attribute_map': {
+                },
+                'location_map': {
+                    'conversion_in': 'body',
+                },
+                'collection_format_map': {
+                }
             },
             headers_map={
-                "accept": ["application/octet-stream", "application/json"],
-                "content_type": ["application/json"],
+                'accept': [
+                    'application/octet-stream',
+                    'application/json'
+                ],
+                'content_type': [
+                    'application/json'
+                ]
             },
             api_client=api_client,
-            callable=__convert_image_images_post,
+            callable=__convert_image_images_post
         )
 
-        def __get_health_async_health_async_get(self, **kwargs):
+        def __get_health_async_health_async_get(
+            self,
+            **kwargs
+        ):
             """Get Health Async  # noqa: E501
 
             This method makes a synchronous HTTP request by default. To make an
@@ -168,60 +194,75 @@ class DefaultApi(object):
                     If the method is called asynchronously, returns the request
                     thread.
             """
-            kwargs["async_req"] = kwargs.get("async_req", False)
-            kwargs["_return_http_data_only"] = kwargs.get(
-                "_return_http_data_only", True
+            kwargs['async_req'] = kwargs.get(
+                'async_req', False
             )
-            kwargs["_preload_content"] = kwargs.get("_preload_content", True)
-            kwargs["_request_timeout"] = kwargs.get("_request_timeout", None)
-            kwargs["_check_input_type"] = kwargs.get("_check_input_type", True)
-            kwargs["_check_return_type"] = kwargs.get("_check_return_type", True)
-            kwargs["_host_index"] = kwargs.get("_host_index")
+            kwargs['_return_http_data_only'] = kwargs.get(
+                '_return_http_data_only', True
+            )
+            kwargs['_preload_content'] = kwargs.get(
+                '_preload_content', True
+            )
+            kwargs['_request_timeout'] = kwargs.get(
+                '_request_timeout', None
+            )
+            kwargs['_check_input_type'] = kwargs.get(
+                '_check_input_type', True
+            )
+            kwargs['_check_return_type'] = kwargs.get(
+                '_check_return_type', True
+            )
+            kwargs['_host_index'] = kwargs.get('_host_index')
             return self.call_with_http_info(**kwargs)
 
         self.get_health_async_health_async_get = _Endpoint(
             settings={
-                "response_type": (
-                    bool,
-                    date,
-                    datetime,
-                    dict,
-                    float,
-                    int,
-                    list,
-                    str,
-                    none_type,
-                ),
-                "auth": [],
-                "endpoint_path": "/health_async",
-                "operation_id": "get_health_async_health_async_get",
-                "http_method": "GET",
-                "servers": None,
+                'response_type': (bool, date, datetime, dict, float, int, list, str, none_type,),
+                'auth': [],
+                'endpoint_path': '/health_async',
+                'operation_id': 'get_health_async_health_async_get',
+                'http_method': 'GET',
+                'servers': None,
             },
             params_map={
-                "all": [],
-                "required": [],
-                "nullable": [],
-                "enum": [],
-                "validation": [],
+                'all': [
+                ],
+                'required': [],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
             },
             root_map={
-                "validations": {},
-                "allowed_values": {},
-                "openapi_types": {},
-                "attribute_map": {},
-                "location_map": {},
-                "collection_format_map": {},
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                },
+                'attribute_map': {
+                },
+                'location_map': {
+                },
+                'collection_format_map': {
+                }
             },
             headers_map={
-                "accept": ["application/json"],
-                "content_type": [],
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
             },
             api_client=api_client,
-            callable=__get_health_async_health_async_get,
+            callable=__get_health_async_health_async_get
         )
 
-        def __get_health_health_get(self, **kwargs):
+        def __get_health_health_get(
+            self,
+            **kwargs
+        ):
             """Get Health  # noqa: E501
 
             This method makes a synchronous HTTP request by default. To make an
@@ -257,55 +298,67 @@ class DefaultApi(object):
                     If the method is called asynchronously, returns the request
                     thread.
             """
-            kwargs["async_req"] = kwargs.get("async_req", False)
-            kwargs["_return_http_data_only"] = kwargs.get(
-                "_return_http_data_only", True
+            kwargs['async_req'] = kwargs.get(
+                'async_req', False
             )
-            kwargs["_preload_content"] = kwargs.get("_preload_content", True)
-            kwargs["_request_timeout"] = kwargs.get("_request_timeout", None)
-            kwargs["_check_input_type"] = kwargs.get("_check_input_type", True)
-            kwargs["_check_return_type"] = kwargs.get("_check_return_type", True)
-            kwargs["_host_index"] = kwargs.get("_host_index")
+            kwargs['_return_http_data_only'] = kwargs.get(
+                '_return_http_data_only', True
+            )
+            kwargs['_preload_content'] = kwargs.get(
+                '_preload_content', True
+            )
+            kwargs['_request_timeout'] = kwargs.get(
+                '_request_timeout', None
+            )
+            kwargs['_check_input_type'] = kwargs.get(
+                '_check_input_type', True
+            )
+            kwargs['_check_return_type'] = kwargs.get(
+                '_check_return_type', True
+            )
+            kwargs['_host_index'] = kwargs.get('_host_index')
             return self.call_with_http_info(**kwargs)
 
         self.get_health_health_get = _Endpoint(
             settings={
-                "response_type": (
-                    bool,
-                    date,
-                    datetime,
-                    dict,
-                    float,
-                    int,
-                    list,
-                    str,
-                    none_type,
-                ),
-                "auth": [],
-                "endpoint_path": "/health",
-                "operation_id": "get_health_health_get",
-                "http_method": "GET",
-                "servers": None,
+                'response_type': (bool, date, datetime, dict, float, int, list, str, none_type,),
+                'auth': [],
+                'endpoint_path': '/health',
+                'operation_id': 'get_health_health_get',
+                'http_method': 'GET',
+                'servers': None,
             },
             params_map={
-                "all": [],
-                "required": [],
-                "nullable": [],
-                "enum": [],
-                "validation": [],
+                'all': [
+                ],
+                'required': [],
+                'nullable': [
+                ],
+                'enum': [
+                ],
+                'validation': [
+                ]
             },
             root_map={
-                "validations": {},
-                "allowed_values": {},
-                "openapi_types": {},
-                "attribute_map": {},
-                "location_map": {},
-                "collection_format_map": {},
+                'validations': {
+                },
+                'allowed_values': {
+                },
+                'openapi_types': {
+                },
+                'attribute_map': {
+                },
+                'location_map': {
+                },
+                'collection_format_map': {
+                }
             },
             headers_map={
-                "accept": ["application/json"],
-                "content_type": [],
+                'accept': [
+                    'application/json'
+                ],
+                'content_type': [],
             },
             api_client=api_client,
-            callable=__get_health_health_get,
+            callable=__get_health_health_get
         )

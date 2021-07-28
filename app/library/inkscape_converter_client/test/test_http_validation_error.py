@@ -13,11 +13,8 @@ import unittest
 
 import app.library.inkscape_converter_client
 from app.library.inkscape_converter_client.model.validation_error import ValidationError
-
-globals()["ValidationError"] = ValidationError
-from app.library.inkscape_converter_client.model.http_validation_error import (
-    HTTPValidationError,
-)
+globals()['ValidationError'] = ValidationError
+from app.library.inkscape_converter_client.model.http_validation_error import HTTPValidationError
 
 
 class TestHTTPValidationError(unittest.TestCase):
@@ -36,5 +33,5 @@ class TestHTTPValidationError(unittest.TestCase):
         pass
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
