@@ -26,19 +26,19 @@ class DoorplatesResponse(BaseModel):
 
 async def to_doorplate(doorplate_request: DoorplateRequest) -> Doorplate:
     return Doorplate(
-        id = None,
-        roomnumber = doorplate_request.roomnumber,
-        description = doorplate_request.description,
-        personname = doorplate_request.personname,
-        template = doorplate_request.template
+        id=None,
+        roomnumber=doorplate_request.roomnumber,
+        description=doorplate_request.description,
+        personname=doorplate_request.personname,
+        template=doorplate_request.template,
     )
 
 
 async def to_doorplate_response(doorplate: Doorplate) -> DoorplateResponse:
     return DoorplateResponse(
-        id = doorplate.id,
-        roomnumber = doorplate.roomnumber,
-        description = doorplate.description,
-        personname = doorplate.personname,
-        template = doorplate.template
+        id=doorplate.id,
+        roomnumber=doorplate.roomnumber,
+        description=doorplate.description,
+        personname=doorplate.personname,
+        template=doorplate.template,
     )

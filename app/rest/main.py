@@ -3,19 +3,26 @@ import asyncio
 import logging.config
 import threading
 import uuid
-from pprint import pprint
 from typing import Optional, List, Union
 
-from fastapi import FastAPI, File, Form, UploadFile, Depends
+from fastapi import FastAPI, File, Form, UploadFile
 from fastapi import Header, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+
 import app.library.person
 import app.library.templates
-from app.library import health, exporter, doorplates, pdf_merger, templates, configuration
+from app.library import (
+    health,
+    exporter,
+    doorplates,
+    pdf_merger,
+    templates,
+    configuration,
+)
 from app.library.doorplates import Doorplate
-from app.rest.doorplate import DoorplateRequest, DoorplateResponse, DoorplatesResponse
 from app.rest import doorplate
+from app.rest.doorplate import DoorplateRequest, DoorplateResponse, DoorplatesResponse
 
 fastapi = FastAPI()
 
@@ -58,9 +65,11 @@ async def post_file(template_file: UploadFile = File(...), filename: str = Form(
     await templates.add(filename, template_data)
 
 
-@fastapi.post("/doorplates/", response_model=Union[DoorplateResponse, DoorplatesResponse])
+@fastapi.post(
+    "/doorplates/", response_model=Union[DoorplateResponse, DoorplatesResponse]
+)
 async def route_doorplate_request(
-        request: Request, content_type: Optional[str] = Header(None)
+    request: Request, content_type: Optional[str] = Header(None)
 ) -> Union[DoorplateResponse, DoorplatesResponse]:
     logger.debug(
         f"Received POST request on /doorplates/. Routing depending on Content-Type ({content_type})..."
@@ -126,7 +135,10 @@ async def post_doorplate_csv(doorplates_csv) -> DoorplatesResponse:
 
     return DoorplatesResponse(
         id=combined_doorplates_id,
-        doorplates=[await doorplate.to_doorplate_response(doorplate_) for doorplate_ in doorplates_],
+        doorplates=[
+            await doorplate.to_doorplate_response(doorplate_)
+            for doorplate_ in doorplates_
+        ],
     )
 
 
@@ -152,6 +164,7 @@ async def download_doorplate(doorplate_id: str):
         filename=f"doorplate_{doorplate_id}.pdf",
         media_type="application/pdf",
     )
+
 
 # @fastapi.post("/persons/", response_model=PersonOut)
 # async def post_person(input_person: PersonIn):

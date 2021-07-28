@@ -47,7 +47,9 @@ async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id:
         )
 
         try:
-            logger.debug(f"Sending request to Inkscape microservice ({api_configuration.host})...")
+            logger.debug(
+                f"Sending request to Inkscape microservice ({api_configuration.host})..."
+            )
             # returns an application/octet-stream which results in a BufferedReader here
             # TODO: it would probably be nice if this is async/await,
             #  but OpenAPI generator does not seem to support that.
