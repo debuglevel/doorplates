@@ -94,7 +94,7 @@ async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id:
 
         conversion_in = ConversionIn(
             base64=image_base64,
-            inputformat="svg",  # TODO should not only be svg
+            inputformat="svg",  # TODO should not assume file to be SVG
             outputformat="pdf",
         )
 
