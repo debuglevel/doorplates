@@ -18,6 +18,7 @@ def get_doorplates_directory():
 
 def get_rendering_backend():
     rendering_backend = configuration.get_configuration().rendering_backend
+    logger.debug(f"Using {rendering_backend} as rendering backend.")
 
     if rendering_backend == "svglib":
         logger.warning("Using svglib as rendering backend. This may produce poor results. Please consider switching to inkscape-microservice.")
@@ -32,13 +33,15 @@ async def export_to_pdf(image_data: str, doorplate_id: str):
         f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id}..."
     )
 
-    backend = get_rendering_backend()
-    if backend == "inkscape-microservice":
+    rendering_backend = get_rendering_backend()
+    if rendering_backend == "inkscape-microservice":
         await export_to_pdf_via_inkscape_microservice(image_data, doorplate_id)
-    elif backend == "svglib":
+    elif rendering_backend == "svglib":
         await export_to_pdf_via_svglib(image_data, doorplate_id)
-    elif backend == "cairosvg":
+    elif rendering_backend == "cairosvg":
         await export_to_pdf_via_cairosvg(image_data, doorplate_id)
+    else:
+        logger.error(f"Unknown rending backend '{rendering_backend}'!")
 
 
 async def export_to_pdf_via_svglib(image_data: str, doorplate_id: str):
