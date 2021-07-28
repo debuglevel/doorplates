@@ -15,9 +15,6 @@ RUN addgroup -S -g 1111 appgroup && adduser -S -G appgroup -u 1111 appuser
 RUN apk add --no-cache curl
 #RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/* # if based on Debian/Ubuntu
 
-# add /data directory with correct rights
-RUN mkdir /data && chown 1111:1111 /data
-
 WORKDIR /app
 
 COPY requirements.txt .
@@ -25,10 +22,9 @@ RUN pip3 install -r requirements.txt
 # /app/app looks ugly, but preserves the "app" module folder
 COPY app/ /app/app/
 
-# TODO: somehow this is not too nice. there should just be a /data folder and the location to it should be configurable
-COPY data/ /app/data/
-RUN chown -R 1111:1111 /app/data
-RUN ls -al /app/data
+# add /data directory with correct rights
+COPY data/ /data/
+RUN chown -R 1111:1111 /data
 
 # switch to unprivileged user for following commands
 USER appuser
@@ -36,6 +32,10 @@ USER appuser
 ## set the default port to 8080
 #ENV MICRONAUT_SERVER_PORT 8080
 EXPOSE 8080
+
+# override default data directory paths
+ENV TEMPLATES_DIRECTORY=/data/templates
+ENV DOORPLATES_DIRECTORY=/data/doorplates
 
 ## use a log appender with no timestamps as Docker logs the timestamp itself ("docker logs -t ID")
 #ENV LOG_APPENDER classic-stdout

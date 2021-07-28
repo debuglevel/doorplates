@@ -20,6 +20,8 @@ def get_configuration():
 
 class Configuration(BaseSettings):
     inkscape_url: str
+    templates_directory: str = "data/templates/"
+    doorplates_directory: str = "data/doorplates/"
 
     class Config:
         env_file = "configuration.env"

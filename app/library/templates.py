@@ -4,10 +4,14 @@ from typing import Union
 
 import aiofiles
 
+from app.library import configuration
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-templates_directory = "data/templates/"
+
+def get_templates_directory():
+    return configuration.get_configuration().templates_directory
 
 
 async def add(filename: str, data: Union[bytes, str]):
@@ -19,12 +23,12 @@ async def add(filename: str, data: Union[bytes, str]):
 
 async def get_all_filenames():
     logger.debug("Getting templates...")
-    return [filename for filename in os.listdir(templates_directory)]
+    return [filename for filename in os.listdir(get_templates_directory())]
 
 
 def get_filepath(filename: str) -> str:
     logger.debug(f"Getting template filepath for {filename}...")
-    filepath = f"{templates_directory}/{filename}"
+    filepath = f"{get_templates_directory()}/{filename}"
     return filepath
 
 

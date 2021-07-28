@@ -11,7 +11,9 @@ from app.library.inkscape_converter_client.model.conversion_in import Conversion
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-data_directory = "data/doorplates/"
+
+def get_doorplates_directory():
+    return configuration.get_configuration().doorplates_directory
 
 
 async def export_to_pdf(image_data: str, doorplate_id: str):
@@ -73,4 +75,4 @@ async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id:
 
 def get_filename_from_id(doorplate_id: str) -> str:
     logger.debug(f"Getting PDF filename for doorplate id={doorplate_id}...")
-    return f"{data_directory}/{doorplate_id}.pdf"
+    return f"{get_doorplates_directory()}/{doorplate_id}.pdf"

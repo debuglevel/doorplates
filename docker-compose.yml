@@ -8,5 +8,7 @@ services:
       - "8080:8080"
     environment:
       - INKSCAPE_URL=http://inkscape:8080
+      - TEMPLATES_DIRECTORY=/data/templates
+      - DOORPLATES_DIRECTORY=/data/doorplates
   inkscape:
     image: registry.gitlab.com/debuglevel/inkscape-converter-microservice:0-0-1
