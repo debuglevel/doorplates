@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import base64
 import logging.config
-
+import io
 import aiofiles
 
 from app.library import inkscape_converter_client, configuration
@@ -16,11 +16,58 @@ def get_doorplates_directory():
     return configuration.get_configuration().doorplates_directory
 
 
+def get_rendering_backend():
+    rendering_backend = configuration.get_configuration().rendering_backend
+
+    if rendering_backend == "svglib":
+        logger.warning("Using svglib as rendering backend. This may produce poor results. Please consider switching to inkscape-microservice.")
+    elif rendering_backend == "cairosvg":
+        logger.warning("Using CairoSVG as rendering backend. This may produce unexpected results with Inkscape SVGs. Please consider switching to inkscape-microservice.")
+
+    return rendering_backend
+
+
 async def export_to_pdf(image_data: str, doorplate_id: str):
     logger.debug(
         f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id}..."
     )
-    await export_to_pdf_via_inkscape_microservice(image_data, doorplate_id)
+
+    backend = get_rendering_backend()
+    if backend == "inkscape-microservice":
+        await export_to_pdf_via_inkscape_microservice(image_data, doorplate_id)
+    elif backend == "svglib":
+        await export_to_pdf_via_svglib(image_data, doorplate_id)
+    elif backend == "cairosvg":
+        await export_to_pdf_via_cairosvg(image_data, doorplate_id)
+
+
+async def export_to_pdf_via_svglib(image_data: str, doorplate_id: str):
+    logger.debug(
+        f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id} via svglib..."
+    )
+    from svglib.svglib import svg2rlg
+    from reportlab.graphics import renderPDF
+
+    file_like_image_data = io.BytesIO(bytes(image_data, 'UTF-8'))
+
+    logger.debug("Loading SVG data...")
+    drawing = svg2rlg(file_like_image_data)
+
+    logger.debug("Rendering SVG to PDF...")
+    pdf_filename = get_filename_from_id(doorplate_id)
+    renderPDF.drawToFile(drawing, pdf_filename)
+
+
+async def export_to_pdf_via_cairosvg(image_data: str, doorplate_id: str):
+    logger.debug(
+        f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id} via CairoSVG..."
+    )
+    import cairosvg
+    file_like_image_data = io.BytesIO(bytes(image_data, 'UTF-8'))
+
+    logger.debug("Rendering SVG to PDF...")
+    pdf_filename = get_filename_from_id(doorplate_id)
+    cairosvg.svg2pdf(file_obj=file_like_image_data, write_to=pdf_filename)
 
 
 async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id: str):

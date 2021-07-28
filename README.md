@@ -28,6 +28,61 @@ curl --request POST 'http://localhost:8080/doorplates/' \
 
 `--data-raw '...'` can be replaced by `--data-binary @rooms.csv` to read data from a file.
 
+## Notes
+
+### Rendering backends
+There are some different backends to render your input data into a PDF:
+
+#### Inkscape Microservice
+`inkscape-microservice` uses the [inkscape-converter-microservice](https://github.com/debuglevel/inkscape-converter-microservice) to call Inkscape.
+`inkscape-converter-microservice` obviously needs Inkscape installed.
+But there is a docker image available (see `docker-compose.yml`) and
+actually might just be the easiest variant.
+
+It gives you the best results and especially can handle Inkscape's "flowed text",
+which the other backends will probably not handle well (black boxes or just missing text; see https://superuser.com/questions/1030072/why-do-i-have-black-boxes-in-svgs-created-with-inkscape).
+
+Furthermore, it is the only backend which could handle other input than SVG (although never tested).
+
+#### svglib
+`svglib` uses the [svglib](https://pypi.org/project/svglib/) library, which is purely written
+in Python. Unfortunately it seems to produce rather poor results
+(e.g. the embedded image in `hogwarts_13x13.svg` is just not rendered at all, and the "flowed text" problem exists.)
+
+It's just there for testing purposes (and not even enabled in `requirements.txt` by default).
+
+#### CairoSVG
+`cairosvg` uses the [CairoSVG](https://cairosvg.org/) package around `libcairo`.
+It produces better results than `svglib` although it suffers from the "flowed text" problem.
+
+But even without this, it's a major pain to install into an Alpine docker image; switching to
+the Debian based python docker image would reduce the pain,
+but IMHO is still not worth it as a default.
+
+It might although work if your SVGs do not contain Inkscape's "flowed text", or you always
+remember to convert it (see above).
+
+Feel free to customize the docker image for your needs; the `apt` command would be this:
+```bash
+# Install the cairo library on the python Debian image
+RUN apt-get update && apt-get install -y libcairo2 && rm -rf /var/lib/apt/lists/*
+```
+
+For Alpine, there is a `cairo` package available. But `pip` does not provide wheels for Alpine,
+and so, `pip` has to compile the stuff itself. Therefore, you have to install some `-dev` and `build` packages.
+```bash
+# Install dependencies for CairoSVG on Alpine
+RUN apk add --no-cache \
+    build-base cairo-dev cairo cairo-tools \
+    # pillow dependencies
+    jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev
+```
+
+It's just there for testing purposes (and not even enabled in `requirements.txt` by default).
+
+#### CairoSVG
+
+
 # TODO
 ## OpenAPI clients
 With inkscape microservice port 8081 on the host:

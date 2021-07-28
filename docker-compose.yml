@@ -10,5 +10,8 @@ services:
       - INKSCAPE_URL=http://inkscape:8080
       - TEMPLATES_DIRECTORY=/data/templates
       - DOORPLATES_DIRECTORY=/data/doorplates
+      - RENDERING_BACKEND="inkscape-microservice"
+      #- RENDERING_BACKEND="cairosvg"
+      #- RENDERING_BACKEND="svglib"
   inkscape:
     image: registry.gitlab.com/debuglevel/inkscape-converter-microservice:0-0-1
