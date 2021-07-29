@@ -32,17 +32,17 @@ def get_filepath(filename: str) -> str:
     return filepath
 
 
-async def get_data(filename: str) -> str:
+async def get_data(filename: str) -> bytes:
     logger.debug(f"Getting template {filename}...")
     filepath = get_filepath(filename)
-    async with aiofiles.open(filepath, "r") as file:
+    async with aiofiles.open(filepath, "rb") as file:
         data = await file.read()
     return data
 
 
 async def generate(
     room_number: str, description: str, person_name: str, template_filename: str
-) -> str:
+) -> bytes:
     logger.debug(f"Generating template file for room number '{room_number}'...")
 
     data = await get_data(template_filename)
@@ -51,11 +51,13 @@ async def generate(
     return data
 
 
-async def replace_placeholders(data, description, person_name, room_number):
+async def replace_placeholders(
+    data: bytes, description: str, person_name: str, room_number: str
+):
     logger.debug(f"Replacing placeholders in template file...")
 
-    data = data.replace("$roomNumber$", room_number)
-    data = data.replace("$roomDescription$", description)
-    data = data.replace("$roomPerson$", person_name)
+    data = data.replace(b"$roomNumber$", bytes(room_number, "UTF-8"))
+    data = data.replace(b"$roomDescription$", bytes(description, "UTF-8"))
+    data = data.replace(b"$roomPerson$", bytes(person_name, "UTF-8"))
 
     return data

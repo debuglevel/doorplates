@@ -34,7 +34,7 @@ def get_rendering_backend():
     return rendering_backend
 
 
-async def export_to_pdf(image_data: str, doorplate_id: str):
+async def export_to_pdf(image_data: bytes, doorplate_id: str):
     logger.debug(
         f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id}..."
     )
@@ -68,14 +68,14 @@ async def export_to_pdf(image_data: str, doorplate_id: str):
         )
 
 
-async def export_to_pdf_via_svglib(image_data: str, pdf_filename: str):
+async def export_to_pdf_via_svglib(image_data: bytes, pdf_filename: str):
     logger.debug(
         f"Exporting image ({len(image_data)} bytes) to '{pdf_filename}' via svglib..."
     )
     from svglib.svglib import svg2rlg
     from reportlab.graphics import renderPDF
 
-    file_like_image_data = io.BytesIO(bytes(image_data, "UTF-8"))
+    file_like_image_data = io.BytesIO(image_data)
 
     logger.debug("Loading SVG data...")
     drawing = svg2rlg(file_like_image_data)
@@ -84,19 +84,19 @@ async def export_to_pdf_via_svglib(image_data: str, pdf_filename: str):
     renderPDF.drawToFile(drawing, pdf_filename)
 
 
-async def export_to_pdf_via_cairosvg(image_data: str, pdf_filename: str):
+async def export_to_pdf_via_cairosvg(image_data: bytes, pdf_filename: str):
     logger.debug(
         f"Exporting image ({len(image_data)} bytes) to '{pdf_filename}' via CairoSVG..."
     )
     import cairosvg
 
-    file_like_image_data = io.BytesIO(bytes(image_data, "UTF-8"))
+    file_like_image_data = io.BytesIO(image_data)
 
     logger.debug("Rendering SVG to PDF...")
     cairosvg.svg2pdf(file_obj=file_like_image_data, write_to=pdf_filename)
 
 
-async def export_to_pdf_via_inkscape(image_data: str, pdf_filename: str):
+async def export_to_pdf_via_inkscape(image_data: bytes, pdf_filename: str):
     logger.debug(
         f"Exporting image ({len(image_data)} bytes) to '{pdf_filename}' via Inkscape..."
     )
@@ -104,7 +104,7 @@ async def export_to_pdf_via_inkscape(image_data: str, pdf_filename: str):
 
     with tempfile.NamedTemporaryFile() as input_file:
         logger.debug(f"Writing temporary file to '{input_file.name}'...")
-        input_file.write(bytes(image_data, "UTF-8"))
+        input_file.write(image_data)
         input_file.flush()
 
         process_arguments = [
@@ -118,14 +118,13 @@ async def export_to_pdf_via_inkscape(image_data: str, pdf_filename: str):
         logger.debug(f"Called inkscape")
 
 
-async def export_to_pdf_via_inkscape_microservice(image_data: str, pdf_filename: str):
+async def export_to_pdf_via_inkscape_microservice(image_data: bytes, pdf_filename: str):
     logger.debug(
         f"Exporting image ({len(image_data)} bytes) to '{pdf_filename}' via Inkscape microservice..."
     )
 
     logger.debug("Encoding image data to Base64...")
-    image_bytes = image_data.encode("UTF-8")
-    image_base64_bytes = base64.b64encode(image_bytes)
+    image_base64_bytes = base64.b64encode(image_data)
     image_base64 = image_base64_bytes.decode("UTF-8")
     logger.debug(
         f"Encoded SVG data ({len(image_data)} bytes) to Base64 ({len(image_base64)} bytes)..."
