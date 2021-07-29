@@ -35,15 +35,17 @@ async def export_to_pdf(image_data: str, doorplate_id: str):
         f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id}..."
     )
 
+    pdf_filename = get_filename_from_id(doorplate_id)
+
     rendering_backend = get_rendering_backend()
     if rendering_backend == "inkscape-microservice":
-        await export_to_pdf_via_inkscape_microservice(image_data, doorplate_id)
-    if rendering_backend == "inkscape":
-        await export_to_pdf_via_inkscape(image_data, doorplate_id)
+        await export_to_pdf_via_inkscape_microservice(image_data, pdf_filename)
+    elif rendering_backend == "inkscape":
+        await export_to_pdf_via_inkscape(image_data, pdf_filename)
     elif rendering_backend == "svglib":
-        await export_to_pdf_via_svglib(image_data, doorplate_id)
+        await export_to_pdf_via_svglib(image_data, pdf_filename)
     elif rendering_backend == "cairosvg":
-        await export_to_pdf_via_cairosvg(image_data, doorplate_id)
+        await export_to_pdf_via_cairosvg(image_data, pdf_filename)
     else:
         logger.error(f"Unknown rending backend '{rendering_backend}'!")
 
@@ -51,16 +53,16 @@ async def export_to_pdf(image_data: str, doorplate_id: str):
     if pdf_file.is_file():
         size = pdf_file.stat().st_size
         if size > 0:
-            logger.debug(f"Output file {pdf_file} has {size} bytes.")
+            logger.debug(f"Output file '{pdf_file}' has {size} bytes.")
         else:
-            raise FileNotFoundError(f"Output file {pdf_file} has 0 bytes after rendering.")
+            raise FileNotFoundError(f"Output file '{pdf_file}' has 0 bytes after rendering.")
     else:
-        raise FileNotFoundError(f"Output file {pdf_file} does not exist after rendering.")
+        raise FileNotFoundError(f"Output file '{pdf_file}' does not exist after rendering.")
 
 
-async def export_to_pdf_via_svglib(image_data: str, doorplate_id: str):
+async def export_to_pdf_via_svglib(image_data: str, pdf_filename: str):
     logger.debug(
-        f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id} via svglib..."
+        f"Exporting image ({len(image_data)} bytes) to '{pdf_filename}' via svglib..."
     )
     from svglib.svglib import svg2rlg
     from reportlab.graphics import renderPDF
@@ -71,29 +73,25 @@ async def export_to_pdf_via_svglib(image_data: str, doorplate_id: str):
     drawing = svg2rlg(file_like_image_data)
 
     logger.debug("Rendering SVG to PDF...")
-    pdf_filename = get_filename_from_id(doorplate_id)
     renderPDF.drawToFile(drawing, pdf_filename)
 
 
-async def export_to_pdf_via_cairosvg(image_data: str, doorplate_id: str):
+async def export_to_pdf_via_cairosvg(image_data: str, pdf_filename: str):
     logger.debug(
-        f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id} via CairoSVG..."
+        f"Exporting image ({len(image_data)} bytes) to '{pdf_filename}' via CairoSVG..."
     )
     import cairosvg
     file_like_image_data = io.BytesIO(bytes(image_data, 'UTF-8'))
 
     logger.debug("Rendering SVG to PDF...")
-    pdf_filename = get_filename_from_id(doorplate_id)
     cairosvg.svg2pdf(file_obj=file_like_image_data, write_to=pdf_filename)
 
 
-async def export_to_pdf_via_inkscape(image_data: str, doorplate_id: str):
+async def export_to_pdf_via_inkscape(image_data: str, pdf_filename: str):
     logger.debug(
-        f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id} via Inkscape..."
+        f"Exporting image ({len(image_data)} bytes) to '{pdf_filename}' via Inkscape..."
     )
     from subprocess import call
-
-    pdf_filename = get_filename_from_id(doorplate_id)
 
     with tempfile.NamedTemporaryFile() as input_file:
         logger.debug(f"Writing temporary file to '{input_file.name}'...")
@@ -111,9 +109,9 @@ async def export_to_pdf_via_inkscape(image_data: str, doorplate_id: str):
         logger.debug(f"Called inkscape")
 
 
-async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id: str):
+async def export_to_pdf_via_inkscape_microservice(image_data: str, pdf_filename: str):
     logger.debug(
-        f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id} via Inkscape microservice..."
+        f"Exporting image ({len(image_data)} bytes) to '{pdf_filename}' via Inkscape microservice..."
     )
 
     logger.debug("Encoding image data to Base64...")
@@ -150,7 +148,6 @@ async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id:
             )
             logger.debug("Received response from Inkscape microservice")
 
-            pdf_filename = get_filename_from_id(doorplate_id)
             async with aiofiles.open(pdf_filename, "wb") as pdf_file:
                 logger.debug(f"Writing PDF to {pdf_filename}...")
                 await pdf_file.write(pdf_buffered_reader.read())
