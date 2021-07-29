@@ -23,9 +23,9 @@ class Configuration(BaseSettings):
     templates_directory: str = "data/templates/"
     doorplates_directory: str = "data/doorplates/"
     rendering_backend: str = "inkscape-microservice"
-    #rendering_backend: str = "inkscape"
-    #rendering_backend: str = "cairosvg"
-    #rendering_backend: str = "svglib"
+    # rendering_backend: str = "inkscape"
+    # rendering_backend: str = "cairosvg"
+    # rendering_backend: str = "svglib"
 
     class Config:
         env_file = "configuration.env"

@@ -23,9 +23,13 @@ def get_rendering_backend():
     logger.debug(f"Using {rendering_backend} as rendering backend.")
 
     if rendering_backend == "svglib":
-        logger.warning("Using svglib as rendering backend. This may produce poor results. Please consider switching to inkscape-microservice.")
+        logger.warning(
+            "Using svglib as rendering backend. This may produce poor results. Please consider switching to inkscape-microservice."
+        )
     elif rendering_backend == "cairosvg":
-        logger.warning("Using CairoSVG as rendering backend. This may produce unexpected results with Inkscape SVGs. Please consider switching to inkscape-microservice.")
+        logger.warning(
+            "Using CairoSVG as rendering backend. This may produce unexpected results with Inkscape SVGs. Please consider switching to inkscape-microservice."
+        )
 
     return rendering_backend
 
@@ -55,9 +59,13 @@ async def export_to_pdf(image_data: str, doorplate_id: str):
         if size > 0:
             logger.debug(f"Output file '{pdf_file}' has {size} bytes.")
         else:
-            raise FileNotFoundError(f"Output file '{pdf_file}' has 0 bytes after rendering.")
+            raise FileNotFoundError(
+                f"Output file '{pdf_file}' has 0 bytes after rendering."
+            )
     else:
-        raise FileNotFoundError(f"Output file '{pdf_file}' does not exist after rendering.")
+        raise FileNotFoundError(
+            f"Output file '{pdf_file}' does not exist after rendering."
+        )
 
 
 async def export_to_pdf_via_svglib(image_data: str, pdf_filename: str):
@@ -67,7 +75,7 @@ async def export_to_pdf_via_svglib(image_data: str, pdf_filename: str):
     from svglib.svglib import svg2rlg
     from reportlab.graphics import renderPDF
 
-    file_like_image_data = io.BytesIO(bytes(image_data, 'UTF-8'))
+    file_like_image_data = io.BytesIO(bytes(image_data, "UTF-8"))
 
     logger.debug("Loading SVG data...")
     drawing = svg2rlg(file_like_image_data)
@@ -81,7 +89,8 @@ async def export_to_pdf_via_cairosvg(image_data: str, pdf_filename: str):
         f"Exporting image ({len(image_data)} bytes) to '{pdf_filename}' via CairoSVG..."
     )
     import cairosvg
-    file_like_image_data = io.BytesIO(bytes(image_data, 'UTF-8'))
+
+    file_like_image_data = io.BytesIO(bytes(image_data, "UTF-8"))
 
     logger.debug("Rendering SVG to PDF...")
     cairosvg.svg2pdf(file_obj=file_like_image_data, write_to=pdf_filename)
@@ -95,7 +104,7 @@ async def export_to_pdf_via_inkscape(image_data: str, pdf_filename: str):
 
     with tempfile.NamedTemporaryFile() as input_file:
         logger.debug(f"Writing temporary file to '{input_file.name}'...")
-        input_file.write(bytes(image_data, 'UTF-8'))
+        input_file.write(bytes(image_data, "UTF-8"))
         input_file.flush()
 
         process_arguments = [
