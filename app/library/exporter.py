@@ -2,6 +2,8 @@
 import base64
 import logging.config
 import io
+import tempfile
+
 import aiofiles
 
 from app.library import inkscape_converter_client, configuration
@@ -36,6 +38,8 @@ async def export_to_pdf(image_data: str, doorplate_id: str):
     rendering_backend = get_rendering_backend()
     if rendering_backend == "inkscape-microservice":
         await export_to_pdf_via_inkscape_microservice(image_data, doorplate_id)
+    if rendering_backend == "inkscape":
+        await export_to_pdf_via_inkscape(image_data, doorplate_id)
     elif rendering_backend == "svglib":
         await export_to_pdf_via_svglib(image_data, doorplate_id)
     elif rendering_backend == "cairosvg":
@@ -71,6 +75,30 @@ async def export_to_pdf_via_cairosvg(image_data: str, doorplate_id: str):
     logger.debug("Rendering SVG to PDF...")
     pdf_filename = get_filename_from_id(doorplate_id)
     cairosvg.svg2pdf(file_obj=file_like_image_data, write_to=pdf_filename)
+
+
+async def export_to_pdf_via_inkscape(image_data: str, doorplate_id: str):
+    logger.debug(
+        f"Exporting image ({len(image_data)} bytes) to PDF with id={doorplate_id} via Inkscape..."
+    )
+    from subprocess import call
+
+    pdf_filename = get_filename_from_id(doorplate_id)
+
+    with tempfile.NamedTemporaryFile() as input_file:
+        logger.debug(f"Writing temporary file to '{input_file.name}'...")
+        input_file.write(bytes(image_data, 'UTF-8'))
+        input_file.flush()
+
+        process_arguments = [
+            "inkscape",
+            f"{input_file.name}",
+            f"--export-filename={pdf_filename}",
+        ]
+
+        logger.debug(f"Calling inkscape: {process_arguments}")
+        call(process_arguments)
+        logger.debug(f"Called inkscape")
 
 
 async def export_to_pdf_via_inkscape_microservice(image_data: str, doorplate_id: str):

@@ -44,6 +44,12 @@ which the other backends will probably not handle well (black boxes or just miss
 
 Furthermore, it is the only backend which could handle other input than SVG (although never tested).
 
+#### Inkscape
+`inkscape` calls Inkscape without the microservice above.
+
+`apk add inkscape` installs about 99 packages, and fonts are not yet included (if available at all).
+But on a Debian based docker image (or just a Debian machine), this might work quite well.
+
 #### svglib
 `svglib` uses the [svglib](https://pypi.org/project/svglib/) library, which is purely written
 in Python. Unfortunately it seems to produce rather poor results
