@@ -13,47 +13,43 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>Door plates generator</h1>
-
-    <div class="card">
-        <div class="card-body">
-            <p>
-                Door plates generator is a convenient tool to create a batch of PDF door plates from a SVG template.
-            </p>
-            <p>
-                Just enter the data as comma separated values (CSV) in the following format: "<strong>room
-                number;description;person;template</strong>".
-            </p>
-            <p>
-                If you do not want to provide a name, just leave it: "<strong>101;Headmaster;;13x13.svg</strong>".
-            </p>
-            <p>
-                If your second line is too long (e.g.) "<strong>101;The headmaster of Hogwarts;;13x13.svg</strong>"),
-                you can try to wrap it into the next line ("<strong>101;The headmaster;of Hogwarts;13x13.svg</strong>").
-            </p>
-        </div>
+<main>
+    <div class="container">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <span class="fs-4">Door plates generator</span>
+        </header>
     </div>
 
-    <form action="/doorplates/" id="csvForm">
-        <div class="form-group">
-        <textarea name="csv" rows="20" cols="70" class="form-control">401;Headmaster;Albus Dumbledore;hogwarts_13x13.svg
+    <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">
+            Door plates generator is a convenient tool to create a batch of PDF door plates from a SVG template.
+        </p>
+        <p class="lead mb-4">
+            Just enter the data as comma separated values (CSV) in the following format: "<strong>room
+            number;description;person;template</strong>".
+        </p>
+        <p class="lead mb-4">
+            If you do not want to provide a name, just leave it: "<strong>101;Headmaster;;13x13.svg</strong>".
+        </p>
+        <p class="lead mb-4">
+            If your second line is too long (e.g. "<strong>101;The headmaster of Hogwarts;;13x13.svg</strong>"),
+            you can try to wrap it into the next line ("<strong>101;The headmaster;of Hogwarts;13x13.svg</strong>").
+        </p>
+
+        <form action="/doorplates/" id="csvForm">
+            <textarea name="csv" rows="10" cols="70" class="form-control">
+401;Headmaster;Albus Dumbledore;hogwarts_13x13.svg
 102;Head of Gryffindor;Minerva McGonagall;13x13.svg</textarea>
-        </div>
 
-        <div class="card">
-            <div class="card-body">
-                <p>
-                    Please press this button and wait until finished (additional pressing just renews your waiting time,
-                    so please be patient).
-                </p>
+            <p class="lead mb-4">
+                Please press this button and wait until finished (additional pressing just renews your waiting time,
+                so please be patient).
+            </p>
 
-                <input type="submit" value="Generate door plates (please be patient!)" class="btn btn-primary">
-            </div>
-        </div>
-    </form>
-</div>
-
+            <input type="submit" value="Generate door plates" class="btn btn-primary">
+        </form>
+    </div>
+</main>
 
 <!-- Optional JavaScript; choose one of the two! -->
 
@@ -99,7 +95,6 @@
           window.location="/doorplates/"+doorplate.id
         });
       });
-
 </script>
 </body>
 </html>
