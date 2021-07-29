@@ -5,7 +5,7 @@ import io
 import tempfile
 
 import aiofiles
-
+from pathlib import Path
 from app.library import inkscape_converter_client, configuration
 from app.library.inkscape_converter_client.api import default_api
 from app.library.inkscape_converter_client.model.conversion_in import ConversionIn
@@ -46,6 +46,16 @@ async def export_to_pdf(image_data: str, doorplate_id: str):
         await export_to_pdf_via_cairosvg(image_data, doorplate_id)
     else:
         logger.error(f"Unknown rending backend '{rendering_backend}'!")
+
+    pdf_file = Path(pdf_filename)
+    if pdf_file.is_file():
+        size = pdf_file.stat().st_size
+        if size > 0:
+            logger.debug(f"Output file {pdf_file} has {size} bytes.")
+        else:
+            raise FileNotFoundError(f"Output file {pdf_file} has 0 bytes after rendering.")
+    else:
+        raise FileNotFoundError(f"Output file {pdf_file} does not exist after rendering.")
 
 
 async def export_to_pdf_via_svglib(image_data: str, doorplate_id: str):
