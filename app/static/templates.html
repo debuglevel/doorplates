@@ -22,6 +22,15 @@
 
     <div class="col-lg-6 mx-auto">
         <p class="lead mb-4">
+            The following templates already exist:
+        </p>
+
+        <button id="reload_templates" class="btn btn-secondary mb-3">Reload templates</button>
+        <ul class="list-group" id="templates_list">
+            <li class="list-group-item">not yet loaded</li>
+        </ul>
+
+        <p class="lead mb-4">
             Door plate generator basically just replaces the following placeholders with real values and generates a
             PDF:
         </p>
@@ -75,5 +84,23 @@
 
 <!-- Optional JavaScript -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+
+<script>
+function refreshTemplates(jQuery) {
+    $.ajax({
+      url: "/templates/",
+      success: function(result) {
+        $("#templates_list").empty()
+        $.each(result, function(i, filename) {
+          $("#templates_list").append('<li class="list-group-item">'+filename+'</li>');
+        });
+      }
+    });
+}
+
+$(document).ready(refreshTemplates);
+$("#reload_templates").click(refreshTemplates);
+
+</script>
 </body>
 </html>
