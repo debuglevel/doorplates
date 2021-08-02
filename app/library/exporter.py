@@ -1,14 +1,17 @@
 #!/usr/bin/python3
+import asyncio
 import base64
-import logging.config
 import io
+import logging.config
 import tempfile
+from pathlib import Path
 
 import aiofiles
-from pathlib import Path
+
 from app.library import inkscape_converter_client, configuration
 from app.library.inkscape_converter_client.api import default_api
-from app.library.inkscape_converter_client.model.conversion_in import ConversionIn
+from app.library.inkscape_converter_client.model.conversion_request import ConversionRequest
+from app.library.inkscape_converter_client.model.conversion_response import ConversionResponse
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -125,9 +128,9 @@ async def export_to_pdf_via_inkscape_microservice(image_data: bytes, pdf_filenam
 
     logger.debug("Encoding image data to Base64...")
     image_base64_bytes = base64.b64encode(image_data)
-    image_base64 = image_base64_bytes.decode("UTF-8")
+    image_base64_string = image_base64_bytes.decode("UTF-8")
     logger.debug(
-        f"Encoded SVG data ({len(image_data)} bytes) to Base64 ({len(image_base64)} bytes)..."
+        f"Encoded SVG data ({len(image_data)} bytes) to Base64 ({len(image_base64_string)} bytes)..."
     )
 
     api_configuration = inkscape_converter_client.Configuration(
@@ -136,34 +139,62 @@ async def export_to_pdf_via_inkscape_microservice(image_data: bytes, pdf_filenam
     with inkscape_converter_client.ApiClient(api_configuration) as inkscape_client:
         inkscape_instance = default_api.DefaultApi(inkscape_client)
 
-        conversion_in = ConversionIn(
-            base64=image_base64,
-            inputformat="svg",  # TODO should not assume file to be SVG
-            outputformat="pdf",
+        conversion_request = ConversionRequest(
+            base64=image_base64_string,
+            input_format="svg",  # TODO should not assume file to be SVG
+            output_format="pdf",
         )
 
         try:
-            logger.debug(
-                f"Sending request to Inkscape microservice ({api_configuration.host})..."
-            )
+            logger.debug(f"Sending POST /images/ request to Inkscape microservice ({api_configuration.host})...")
             # returns an application/octet-stream which results in a BufferedReader here
             # TODO: it would probably be nice if this is async/await,
             #  but OpenAPI generator does not seem to support that.
             #  async_req would at least create a thread; but this does not seem
             #  to be very helpful at this place (maybe in post_doorplate_csv instead of the async?).
-            pdf_buffered_reader = inkscape_instance.convert_image_images_post(
-                conversion_in
-            )
-            logger.debug("Received response from Inkscape microservice")
+            conversion_response: ConversionResponse = inkscape_instance.post_image_images_post(conversion_request)
+            logger.debug(f"Received response from Inkscape microservice: {conversion_response}")
+
+        except inkscape_converter_client.ApiException as e:
+            logger.error(f"Exception when calling DefaultApi->post_image_images_post: {e}")
+
+        await wait_for_conversion_done(api_configuration, inkscape_instance, conversion_response.id)
+
+        try:
+            logger.debug(f"Sending GET /images/{conversion_response.id}/download request to Inkscape microservice ({api_configuration.host})...")
+
+            # returns an application/octet-stream which results in a BufferedReader here
+            pdf_buffered_reader = inkscape_instance.download_image_images_image_id_download_get(conversion_response.id)
 
             async with aiofiles.open(pdf_filename, "wb") as pdf_file:
                 logger.debug(f"Writing PDF to {pdf_filename}...")
                 await pdf_file.write(pdf_buffered_reader.read())
 
         except inkscape_converter_client.ApiException as e:
-            logger.error(
-                f"Exception when calling DefaultApi->convert_image_images_post: {e}\n"
-            )
+            logger.error(f"Exception when calling DefaultApi->download_image_images_image_id_download_get: {e}")
+
+        # TODO: DELETE image afterwards
+
+
+async def wait_for_conversion_done(api_configuration, inkscape_instance, conversion_id: str):
+    while True:
+        logger.debug("Checking if conversion is done...")
+        try:
+            logger.debug(
+                f"Sending GET /images/{conversion_id} request to Inkscape microservice ({api_configuration.host})...")
+            conversion_response: ConversionResponse = inkscape_instance.get_image_images_image_id_get(conversion_id)
+            if conversion_response.status == "enqueued":
+                logger.debug("Conversion is still enqueued. Sleeping and retrying...")
+                await asyncio.sleep(1)
+                continue
+            elif conversion_response.status == "done":
+                logger.debug("Conversion is done.")
+                break
+            else:
+                logger.error(f"Conversion has unknown status '{conversion_response.status}'")
+        except inkscape_converter_client.ApiException as e:
+            logger.error(f"Exception when calling DefaultApi->get_image_images_image_id_get: {e}")
+    return conversion_response
 
 
 def get_filename_from_id(doorplate_id: str) -> str:

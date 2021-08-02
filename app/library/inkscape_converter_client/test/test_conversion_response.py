@@ -12,11 +12,13 @@ import sys
 import unittest
 
 import app.library.inkscape_converter_client
-from app.library.inkscape_converter_client.model.conversion_in import ConversionIn
+from app.library.inkscape_converter_client.model.conversion_response import (
+    ConversionResponse,
+)
 
 
-class TestConversionIn(unittest.TestCase):
-    """ConversionIn unit test stubs"""
+class TestConversionResponse(unittest.TestCase):
+    """ConversionResponse unit test stubs"""
 
     def setUp(self):
         pass
@@ -24,10 +26,10 @@ class TestConversionIn(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testConversionIn(self):
-        """Test ConversionIn"""
+    def testConversionResponse(self):
+        """Test ConversionResponse"""
         # FIXME: construct object with mandatory attributes with example values
-        # model = ConversionIn()  # noqa: E501
+        # model = ConversionResponse()  # noqa: E501
         pass
 
 

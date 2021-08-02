@@ -852,10 +852,10 @@ class Endpoint(object):
         Example:
 
         api_instance = DefaultApi()
-        api_instance.convert_image_images_post  # this is an instance of the class Endpoint
-        api_instance.convert_image_images_post()  # this invokes api_instance.convert_image_images_post.__call__()
+        api_instance.delete_image_images_image_id_delete  # this is an instance of the class Endpoint
+        api_instance.delete_image_images_image_id_delete()  # this invokes api_instance.delete_image_images_image_id_delete.__call__()
         which then invokes the callable functions stored in that endpoint at
-        api_instance.convert_image_images_post.callable or self.callable in this class
+        api_instance.delete_image_images_image_id_delete.callable or self.callable in this class
 
         """
         return self.callable(self, *args, **kwargs)

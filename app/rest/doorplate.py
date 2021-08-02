@@ -25,7 +25,7 @@ class DoorplatesResponse(BaseModel):
     doorplates: List[DoorplateResponse]
 
 
-async def to_doorplate(doorplate_request: DoorplateRequest) -> Doorplate:
+def to_doorplate(doorplate_request: DoorplateRequest) -> Doorplate:
     return Doorplate(
         id=None,
         roomnumber=doorplate_request.roomnumber,
@@ -35,7 +35,7 @@ async def to_doorplate(doorplate_request: DoorplateRequest) -> Doorplate:
     )
 
 
-async def to_doorplate_response(doorplate: Doorplate) -> DoorplateResponse:
+def to_doorplate_response(doorplate: Doorplate) -> DoorplateResponse:
     return DoorplateResponse(
         id=doorplate.id,
         roomnumber=doorplate.roomnumber,

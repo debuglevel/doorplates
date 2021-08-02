@@ -31,7 +31,8 @@ import time
 import app.library.inkscape_converter_client
 from pprint import pprint
 from app.library.inkscape_converter_client.api import default_api
-from app.library.inkscape_converter_client.model.conversion_in import ConversionIn
+from app.library.inkscape_converter_client.model.conversion_request import ConversionRequest
+from app.library.inkscape_converter_client.model.conversion_response import ConversionResponse
 from app.library.inkscape_converter_client.model.http_validation_error import HTTPValidationError
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
@@ -45,18 +46,14 @@ configuration = app.library.inkscape_converter_client.Configuration(
 with app.library.inkscape_converter_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = default_api.DefaultApi(api_client)
-    conversion_in = ConversionIn(
-        base64="base64_example",
-        inputformat="inputformat_example",
-        outputformat="outputformat_example",
-    ) # ConversionIn | 
+    image_id = "image_id_example" # str | 
 
     try:
-        # Convert Image
-        api_response = api_instance.convert_image_images_post(conversion_in)
+        # Delete Image
+        api_response = api_instance.delete_image_images_image_id_delete(image_id)
         pprint(api_response)
     except app.library.inkscape_converter_client.ApiException as e:
-        print("Exception when calling DefaultApi->convert_image_images_post: %s\n" % e)
+        print("Exception when calling DefaultApi->delete_image_images_image_id_delete: %s\n" % e)
 ```
 
 ## Documentation for API Endpoints
@@ -65,14 +62,19 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | [**convert_image_images_post**](app/library/inkscape_converter_client/docs/DefaultApi.md#convert_image_images_post) | **POST** /images/ | Convert Image
+*DefaultApi* | [**delete_image_images_image_id_delete**](app/library/inkscape_converter_client/docs/DefaultApi.md#delete_image_images_image_id_delete) | **DELETE** /images/{image_id} | Delete Image
+*DefaultApi* | [**download_image_images_image_id_download_get**](app/library/inkscape_converter_client/docs/DefaultApi.md#download_image_images_image_id_download_get) | **GET** /images/{image_id}/download | Download Image
 *DefaultApi* | [**get_health_async_health_async_get**](app/library/inkscape_converter_client/docs/DefaultApi.md#get_health_async_health_async_get) | **GET** /health_async | Get Health Async
 *DefaultApi* | [**get_health_health_get**](app/library/inkscape_converter_client/docs/DefaultApi.md#get_health_health_get) | **GET** /health | Get Health
+*DefaultApi* | [**get_image_images_image_id_get**](app/library/inkscape_converter_client/docs/DefaultApi.md#get_image_images_image_id_get) | **GET** /images/{image_id} | Get Image
+*DefaultApi* | [**get_images_images_get**](app/library/inkscape_converter_client/docs/DefaultApi.md#get_images_images_get) | **GET** /images/ | Get Images
+*DefaultApi* | [**post_image_images_post**](app/library/inkscape_converter_client/docs/DefaultApi.md#post_image_images_post) | **POST** /images/ | Post Image
 
 
 ## Documentation For Models
 
- - [ConversionIn](app/library/inkscape_converter_client/docs/ConversionIn.md)
+ - [ConversionRequest](app/library/inkscape_converter_client/docs/ConversionRequest.md)
+ - [ConversionResponse](app/library/inkscape_converter_client/docs/ConversionResponse.md)
  - [HTTPValidationError](app/library/inkscape_converter_client/docs/HTTPValidationError.md)
  - [ValidationError](app/library/inkscape_converter_client/docs/ValidationError.md)
 

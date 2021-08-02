@@ -9,7 +9,12 @@
 # import sys
 # sys.setrecursionlimit(n)
 
-from app.library.inkscape_converter_client.model.conversion_in import ConversionIn
+from app.library.inkscape_converter_client.model.conversion_request import (
+    ConversionRequest,
+)
+from app.library.inkscape_converter_client.model.conversion_response import (
+    ConversionResponse,
+)
 from app.library.inkscape_converter_client.model.http_validation_error import (
     HTTPValidationError,
 )

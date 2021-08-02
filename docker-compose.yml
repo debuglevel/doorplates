@@ -15,4 +15,4 @@ services:
       #- RENDERING_BACKEND=cairosvg
       #- RENDERING_BACKEND=svglib
   inkscape:
-    image: registry.gitlab.com/debuglevel/inkscape-converter-microservice:0-0-1
+    image: registry.gitlab.com/debuglevel/inkscape-converter-microservice:0-0-4

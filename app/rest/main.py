@@ -94,12 +94,12 @@ async def route_doorplate_request(
 
 
 async def post_doorplate_json(doorplate_request: DoorplateRequest) -> DoorplateResponse:
-    doorplate_ = await doorplate.to_doorplate(doorplate_request)
+    doorplate_ = doorplate.to_doorplate(doorplate_request)
     doorplate_.id = str(uuid.uuid4())
     logger.debug(f"Running doorplate generation id={doorplate_.id} in coroutine...")
     asyncio.create_task(generate_doorplate(doorplate_, doorplate_.id))
 
-    doorplate_response = await doorplate.to_doorplate_response(doorplate_)
+    doorplate_response = doorplate.to_doorplate_response(doorplate_)
     return doorplate_response
 
 
@@ -136,8 +136,7 @@ async def post_doorplate_csv(doorplates_csv) -> DoorplatesResponse:
     return DoorplatesResponse(
         id=combined_doorplates_id,
         doorplates=[
-            await doorplate.to_doorplate_response(doorplate_)
-            for doorplate_ in doorplates_
+            doorplate.to_doorplate_response(doorplate_) for doorplate_ in doorplates_
         ],
     )
 

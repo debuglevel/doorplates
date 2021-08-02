@@ -25,10 +25,17 @@ class TestDefaultApi(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_convert_image_images_post(self):
-        """Test case for convert_image_images_post
+    def test_delete_image_images_image_id_delete(self):
+        """Test case for delete_image_images_image_id_delete
 
-        Convert Image  # noqa: E501
+        Delete Image  # noqa: E501
+        """
+        pass
+
+    def test_download_image_images_image_id_download_get(self):
+        """Test case for download_image_images_image_id_download_get
+
+        Download Image  # noqa: E501
         """
         pass
 
@@ -43,6 +50,27 @@ class TestDefaultApi(unittest.TestCase):
         """Test case for get_health_health_get
 
         Get Health  # noqa: E501
+        """
+        pass
+
+    def test_get_image_images_image_id_get(self):
+        """Test case for get_image_images_image_id_get
+
+        Get Image  # noqa: E501
+        """
+        pass
+
+    def test_get_images_images_get(self):
+        """Test case for get_images_images_get
+
+        Get Images  # noqa: E501
+        """
+        pass
+
+    def test_post_image_images_post(self):
+        """Test case for post_image_images_post
+
+        Post Image  # noqa: E501
         """
         pass
 
