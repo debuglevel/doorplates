@@ -10,8 +10,12 @@ import aiofiles
 
 from app.library import inkscape_converter_client, configuration
 from app.library.inkscape_converter_client.api import default_api
-from app.library.inkscape_converter_client.model.conversion_request import ConversionRequest
-from app.library.inkscape_converter_client.model.conversion_response import ConversionResponse
+from app.library.inkscape_converter_client.model.conversion_request import (
+    ConversionRequest,
+)
+from app.library.inkscape_converter_client.model.conversion_response import (
+    ConversionResponse,
+)
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -139,50 +143,63 @@ async def export_to_pdf_via_inkscape_microservice(image_data: bytes, pdf_filenam
     with inkscape_converter_client.ApiClient(api_configuration) as inkscape_client:
         inkscape_instance = default_api.DefaultApi(inkscape_client)
 
-        conversion_request = ConversionRequest(
-            base64=image_base64_string,
-            input_format="svg",  # TODO should not assume file to be SVG
-            output_format="pdf",
+        conversion_response = await post_conversion(
+            api_configuration, inkscape_instance, image_base64_string
+        )
+        await wait_for_conversion_done(
+            api_configuration, inkscape_instance, conversion_response.id
+        )
+        await download_conversion(
+            api_configuration, inkscape_instance, conversion_response.id, pdf_filename
+        )
+        await delete_conversion(
+            api_configuration, inkscape_instance, conversion_response.id
         )
 
-        try:
-            logger.debug(f"Sending POST /images/ request to Inkscape microservice ({api_configuration.host})...")
-            # returns an application/octet-stream which results in a BufferedReader here
-            # TODO: it would probably be nice if this is async/await,
-            #  but OpenAPI generator does not seem to support that.
-            #  async_req would at least create a thread; but this does not seem
-            #  to be very helpful at this place (maybe in post_doorplate_csv instead of the async?).
-            conversion_response: ConversionResponse = inkscape_instance.post_image_images_post(conversion_request)
-            logger.debug(f"Received response from Inkscape microservice: {conversion_response}")
 
-        except inkscape_converter_client.ApiException as e:
-            logger.error(f"Exception when calling DefaultApi->post_image_images_post: {e}")
+async def post_conversion(
+    api_configuration, inkscape_instance, image_base64_string
+) -> ConversionResponse:
+    conversion_request = ConversionRequest(
+        base64=image_base64_string,
+        input_format="svg",  # TODO should not assume file to be SVG
+        output_format="pdf",
+    )
 
-        await wait_for_conversion_done(api_configuration, inkscape_instance, conversion_response.id)
+    try:
+        logger.debug(
+            f"Sending POST /images/ request to Inkscape microservice ({api_configuration.host})..."
+        )
+        # returns an application/octet-stream which results in a BufferedReader here
+        # TODO: it would probably be nice if this is async/await,
+        #  but OpenAPI generator does not seem to support that.
+        #  async_req would at least create a thread; but this does not seem
+        #  to be very helpful at this place (maybe in post_doorplate_csv instead of the async?).
+        conversion_response: ConversionResponse = (
+            inkscape_instance.post_image_images_post(conversion_request)
+        )
+        logger.debug(
+            f"Received response from Inkscape microservice: {conversion_response}"
+        )
 
-        try:
-            logger.debug(f"Sending GET /images/{conversion_response.id}/download request to Inkscape microservice ({api_configuration.host})...")
+    except inkscape_converter_client.ApiException as e:
+        logger.error(f"Exception when calling DefaultApi->post_image_images_post: {e}")
 
-            # returns an application/octet-stream which results in a BufferedReader here
-            pdf_buffered_reader = inkscape_instance.download_image_images_image_id_download_get(conversion_response.id)
-
-            async with aiofiles.open(pdf_filename, "wb") as pdf_file:
-                logger.debug(f"Writing PDF to {pdf_filename}...")
-                await pdf_file.write(pdf_buffered_reader.read())
-
-        except inkscape_converter_client.ApiException as e:
-            logger.error(f"Exception when calling DefaultApi->download_image_images_image_id_download_get: {e}")
-
-        # TODO: DELETE image afterwards
+    return conversion_response
 
 
-async def wait_for_conversion_done(api_configuration, inkscape_instance, conversion_id: str):
+async def wait_for_conversion_done(
+    api_configuration, inkscape_instance, conversion_id: str
+):
     while True:
         logger.debug("Checking if conversion is done...")
         try:
             logger.debug(
-                f"Sending GET /images/{conversion_id} request to Inkscape microservice ({api_configuration.host})...")
-            conversion_response: ConversionResponse = inkscape_instance.get_image_images_image_id_get(conversion_id)
+                f"Sending GET /images/{conversion_id} request to Inkscape microservice ({api_configuration.host})..."
+            )
+            conversion_response: ConversionResponse = (
+                inkscape_instance.get_image_images_image_id_get(conversion_id)
+            )
             if conversion_response.status == "enqueued":
                 logger.debug("Conversion is still enqueued. Sleeping and retrying...")
                 await asyncio.sleep(1)
@@ -191,10 +208,53 @@ async def wait_for_conversion_done(api_configuration, inkscape_instance, convers
                 logger.debug("Conversion is done.")
                 break
             else:
-                logger.error(f"Conversion has unknown status '{conversion_response.status}'")
+                logger.error(
+                    f"Conversion has unknown status '{conversion_response.status}'"
+                )
+
         except inkscape_converter_client.ApiException as e:
-            logger.error(f"Exception when calling DefaultApi->get_image_images_image_id_get: {e}")
+            logger.error(
+                f"Exception when calling DefaultApi->get_image_images_image_id_get: {e}"
+            )
+
     return conversion_response
+
+
+async def download_conversion(
+    api_configuration, inkscape_instance, conversion_id: str, pdf_filename
+):
+    try:
+        logger.debug(
+            f"Sending GET /images/{conversion_id}/download request to Inkscape microservice ({api_configuration.host})..."
+        )
+
+        # returns an application/octet-stream which results in a BufferedReader here
+        pdf_buffered_reader = (
+            inkscape_instance.download_image_images_image_id_download_get(conversion_id)
+        )
+
+        async with aiofiles.open(pdf_filename, "wb") as pdf_file:
+            logger.debug(f"Writing PDF to {pdf_filename}...")
+            await pdf_file.write(pdf_buffered_reader.read())
+
+    except inkscape_converter_client.ApiException as e:
+        logger.error(
+            f"Exception when calling DefaultApi->download_image_images_image_id_download_get: {e}"
+        )
+
+
+async def delete_conversion(api_configuration, inkscape_instance, conversion_id: str):
+    try:
+        logger.debug(
+            f"Sending DELETE /images/{conversion_id} request to Inkscape microservice ({api_configuration.host})..."
+        )
+
+        inkscape_instance.delete_image_images_image_id_delete(conversion_id)
+
+    except inkscape_converter_client.ApiException as e:
+        logger.error(
+            f"Exception when calling DefaultApi->delete_image_images_image_id_delete: {e}"
+        )
 
 
 def get_filename_from_id(doorplate_id: str) -> str:
