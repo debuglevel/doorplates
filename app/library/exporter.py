@@ -58,7 +58,7 @@ async def export_to_pdf(image_data: bytes, doorplate_id: str):
     elif rendering_backend == "cairosvg":
         await export_to_pdf_via_cairosvg(image_data, pdf_filename)
     else:
-        logger.error(f"Unknown rending backend '{rendering_backend}'!")
+        logger.error(f"Unknown rendering backend '{rendering_backend}'!")
 
     pdf_file = Path(pdf_filename)
     if pdf_file.is_file():
