@@ -27,7 +27,7 @@ def get_doorplates_directory():
 
 def get_rendering_backend():
     rendering_backend = configuration.get_configuration().rendering_backend
-    logger.debug(f"Using {rendering_backend} as rendering backend.")
+    logger.debug(f"Using '{rendering_backend}' as rendering backend.")
 
     if rendering_backend == "svglib":
         logger.warning(
