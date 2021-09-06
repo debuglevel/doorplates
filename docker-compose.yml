@@ -16,3 +16,5 @@ services:
       #- RENDERING_BACKEND=svglib
   inkscape:
     image: registry.gitlab.com/debuglevel/inkscape-converter-microservice:0-0-6
+    environment:
+      - DATA_DIRECTORY=/data
