@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_templates_directory():
-    return configuration.get_configuration().templates_directory
+    return configuration.get_configuration().get_templates_directory()
 
 
 async def add(filename: str, data: Union[bytes, str]):

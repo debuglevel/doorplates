@@ -8,8 +8,10 @@ services:
       - "8080:8080"
     environment:
       - INKSCAPE_URL=http://inkscape:8080
-      - TEMPLATES_DIRECTORY=/data/templates
-      - DOORPLATES_DIRECTORY=/data/doorplates
+      # if no specific directories are defined, subdirectories in the data directory will be used
+      - DATA_DIRECTORY=/data/
+      #- TEMPLATES_DIRECTORY=/data/templates
+      #- DOORPLATES_DIRECTORY=/data/doorplates
       - RENDERING_BACKEND=inkscape-microservice
       #- RENDERING_BACKEND=inkscape
       #- RENDERING_BACKEND=cairosvg

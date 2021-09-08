@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_doorplates_directory():
-    return configuration.get_configuration().doorplates_directory
+    return configuration.get_configuration().get_doorplates_directory()
 
 
 def get_rendering_backend():
