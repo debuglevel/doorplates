@@ -36,6 +36,16 @@
             you can try to wrap it into the next line ("<strong>101;The headmaster;of Hogwarts;13x13.svg</strong>").
         </p>
 
+        <p class="lead mb-4">
+            The following templates are available:
+        </p>
+
+        <ul class="list-group" id="templates_list">
+            <li class="list-group-item">not yet loaded</li>
+        </ul>
+
+        <br>
+
         <form action="/doorplates/" id="csvForm">
             <textarea name="csv" rows="10" cols="70" class="form-control">
 401;Headmaster;Albus Dumbledore;hogwarts_13x13.svg
@@ -95,6 +105,20 @@
           window.location="/doorplates/"+doorplate.id
         });
       });
+
+      function refreshTemplates(jQuery) {
+        $.ajax({
+          url: "/templates/",
+          success: function(result) {
+            $("#templates_list").empty()
+            $.each(result, function(i, filename) {
+              $("#templates_list").append('<li class="list-group-item">'+filename+'</li>');
+            });
+          }
+        });
+      }
+
+      $(document).ready(refreshTemplates);
 </script>
 </body>
 </html>
