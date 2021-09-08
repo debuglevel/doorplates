@@ -44,25 +44,25 @@ class Configuration(BaseSettings):
 
     def get_doorplates_directory(self):
         if self.doorplates_directory is None:
-            doorplates_directory = f"{self.data_directory}/doorplates/"
-            logger.debug(f"Doorplates directory not specified. Using data directory: {doorplates_directory}")
+            directory = f"{self.data_directory}/doorplates/"
+            logger.debug(f"Doorplates directory not specified. Using data directory: {directory}")
         else:
-            doorplates_directory = self.doorplates_directory
-            logger.debug(f"Doorplates directory specified: {doorplates_directory}")
+            directory = self.doorplates_directory
+            logger.debug(f"Doorplates directory specified: {directory}")
 
-        ensure_directory_exists(doorplates_directory)
-        return doorplates_directory
+        ensure_directory_exists(directory)
+        return directory
 
     def get_templates_directory(self):
         if self.templates_directory is None:
-            templates_directory = f"{self.data_directory}/templates/"
-            logger.debug(f"Templates directory not specified. Using data directory: {templates_directory}")
+            directory = f"{self.data_directory}/templates/"
+            logger.debug(f"Templates directory not specified. Using data directory: {directory}")
         else:
-            templates_directory = self.templates_directory
-            logger.debug(f"Templates directory specified: {self.templates_directory}")
+            directory = self.templates_directory
+            logger.debug(f"Templates directory specified: {directory}")
 
-        ensure_directory_exists(templates_directory)
-        return templates_directory
+        ensure_directory_exists(directory)
+        return directory
 
     class Config:
         env_file = "configuration.env"
